@@ -1,0 +1,56 @@
+# General settings for the LLM tech updater
+
+# Filtering settings
+filter:
+  # Minimum relevance score to include in the report (0.0 - 10.0)
+  min_score: 1.0
+  # Maximum number of items per source in daily report
+  max_items_per_source: 15
+
+# GitHub Issue settings
+issue:
+  # Labels for daily update issues
+  daily_labels:
+    - daily-update
+  # Labels for weekly summary issues
+  weekly_labels:
+    - weekly-summary
+  # Add trigger hint at bottom of daily issues
+  add_weekly_trigger_hint: true
+
+# Email settings
+email:
+  # Enable/disable email sending (set to false to only create Issues)
+  enabled: true
+  # Send email for daily updates
+  daily_enabled: true
+  # Send email for weekly summaries
+  weekly_enabled: true
+  # Email subject prefix
+  subject_prefix: "[LLM Update]"
+
+# Translation settings (for bilingual email)
+translation:
+  # LLM provider: "claude" or "openai"
+  provider: claude
+  # Model to use for translation
+  model: claude-sonnet-4-20250514
+  # System prompt for translation
+  prompt: >
+    You are a professional translator specializing in AI/ML technical content.
+    Translate the following content from English to Chinese.
+    Keep all technical terms, paper titles, repo names, and URLs in their original form.
+    Keep the Markdown formatting intact.
+    Make the translation natural and readable for a Chinese technical audience.
+
+# Weekly summary settings
+weekly_summary:
+  # Number of days to look back
+  lookback_days: 7
+  # Maximum number of top items in weekly summary
+  top_n: 20
+
+# Dedup settings
+dedup:
+  # Number of days to retain seen records
+  retention_days: 30

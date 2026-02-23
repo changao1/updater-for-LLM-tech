@@ -1,0 +1,53 @@
+name: Weekly LLM Summary
+
+on:
+  # Triggered by commenting /weekly-summary on any issue
+  issue_comment:
+    types: [created]
+  # Allow manual trigger from Actions tab
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  weekly-summary:
+    runs-on: ubuntu-latest
+    # Only run if:
+    # 1. Manually triggered (workflow_dispatch), OR
+    # 2. An issue comment contains /weekly-summary
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issue_comment' &&
+       contains(github.event.comment.body, '/weekly-summary'))
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run weekly summary
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          EMAIL_EN: ${{ secrets.EMAIL_EN }}
+          EMAIL_CN: ${{ secrets.EMAIL_CN }}
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+        run: python src/weekly.py
+
+      - name: Acknowledge trigger (if from issue comment)
+        if: github.event_name == 'issue_comment'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+            -f body="Weekly summary is being generated. A new issue with the summary will be created shortly."

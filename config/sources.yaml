@@ -1,0 +1,75 @@
+# Data source configuration
+
+arxiv:
+  # arXiv categories to monitor
+  categories:
+    - cs.CL   # Computation and Language
+    - cs.AI   # Artificial Intelligence
+    - cs.LG   # Machine Learning
+    - cs.SE   # Software Engineering (for coding-related)
+  # Maximum number of papers to fetch per run
+  max_results: 200
+  # Only fetch papers from the last N days
+  lookback_days: 2
+
+github:
+  # Organizations/users to track for new releases
+  tracked_repos:
+    # Major AI Labs
+    - huggingface/transformers
+    - huggingface/text-generation-inference
+    - huggingface/trl
+    - huggingface/peft
+    - huggingface/accelerate
+    - meta-llama/llama
+    - meta-llama/llama-models
+    - meta-llama/PurpleLlama
+    - openai/openai-python
+    - openai/tiktoken
+    - google/gemma_pytorch
+    - google-deepmind/gemma
+    - mistralai/mistral-inference
+    - mistralai/mistral-common
+    - QwenLM/Qwen2.5
+    - deepseek-ai/DeepSeek-V3
+    - deepseek-ai/DeepSeek-R1
+    # Inference & Serving
+    - vllm-project/vllm
+    - ggerganov/llama.cpp
+    - NVIDIA/TensorRT-LLM
+    - ollama/ollama
+    # Frameworks & Tools
+    - langchain-ai/langchain
+    - run-llama/llama_index
+    - anthropics/anthropic-sdk-python
+    - lm-sys/FastChat
+    - microsoft/autogen
+    - crewAIInc/crewAI
+    - stanfordnlp/dspy
+    # Agent Frameworks
+    - langchain-ai/langgraph
+    - microsoft/semantic-kernel
+    - modelcontextprotocol/servers
+    # Training
+    - hiyouga/LLaMA-Factory
+    - unslothai/unsloth
+    - axolotl-ai-cloud/axolotl
+
+  # GitHub Trending settings
+  trending:
+    # Languages to track on GitHub Trending
+    languages:
+      - python
+      - jupyter-notebook
+    # Minimum stars to include a trending repo
+    min_stars: 50
+    # Spoken language filter (empty = all)
+    spoken_language: ""
+
+papers_with_code:
+  # Number of latest papers to fetch
+  max_results: 50
+  # Areas to monitor
+  areas:
+    - natural-language-processing
+    - machine-learning

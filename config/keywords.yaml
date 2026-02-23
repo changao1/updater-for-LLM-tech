@@ -1,0 +1,148 @@
+# Keyword configuration for filtering LLM research updates.
+# Each category has a list of keywords and an optional weight (default 1.0).
+# A paper/repo matching keywords from multiple categories gets a higher score.
+
+reasoning:
+  weight: 1.5
+  terms:
+    - chain-of-thought
+    - chain of thought
+    - reasoning
+    - test-time compute
+    - test time compute
+    - thinking model
+    - o1
+    - o3
+    - deliberative alignment
+    - self-reflection
+    - tree of thought
+    - step-by-step reasoning
+
+coding:
+  weight: 1.5
+  terms:
+    - code generation
+    - code completion
+    - programming assistant
+    - software engineering
+    - code repair
+    - automated debugging
+    - code review
+    - coding agent
+    - SWE-bench
+    - HumanEval
+    - code synthesis
+
+rag:
+  weight: 1.2
+  terms:
+    - retrieval augmented generation
+    - retrieval-augmented
+    - RAG
+    - knowledge retrieval
+    - dense retrieval
+    - embedding model
+    - vector database
+    - semantic search
+    - knowledge grounding
+
+agent:
+  weight: 1.5
+  terms:
+    - AI agent
+    - tool use
+    - tool calling
+    - function calling
+    - multi-agent
+    - agentic
+    - autonomous agent
+    - agent framework
+    - computer use
+    - browser agent
+    - web agent
+    - MCP
+    - model context protocol
+
+architecture:
+  weight: 1.0
+  terms:
+    - transformer
+    - mixture of experts
+    - MoE
+    - long context
+    - state space model
+    - mamba
+    - attention mechanism
+    - sparse attention
+    - linear attention
+    - efficient transformer
+    - RWKV
+    - recurrent model
+    - context window
+    - 1M context
+    - million token
+
+deployment:
+  weight: 1.2
+  terms:
+    - quantization
+    - distillation
+    - inference optimization
+    - speculative decoding
+    - vLLM
+    - TensorRT-LLM
+    - GGUF
+    - GPTQ
+    - AWQ
+    - model compression
+    - edge deployment
+    - on-device
+    - serving
+    - throughput optimization
+    - latency optimization
+    - KV cache
+
+training:
+  weight: 1.0
+  terms:
+    - RLHF
+    - DPO
+    - GRPO
+    - fine-tuning
+    - LoRA
+    - QLoRA
+    - pre-training
+    - post-training
+    - alignment
+    - instruction tuning
+    - preference optimization
+    - reward model
+    - synthetic data
+    - data curation
+    - scaling law
+
+multimodal:
+  weight: 1.0
+  terms:
+    - multimodal
+    - vision language model
+    - VLM
+    - image understanding
+    - video understanding
+    - audio language model
+    - speech-to-text
+    - OCR
+    - visual reasoning
+
+safety:
+  weight: 0.8
+  terms:
+    - AI safety
+    - jailbreak
+    - red teaming
+    - guardrails
+    - content filtering
+    - hallucination
+    - factuality
+    - faithfulness
+    - constitutional AI
