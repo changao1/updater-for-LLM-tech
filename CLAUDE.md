@@ -19,7 +19,8 @@ src/
 ├── notifiers/
 │   └── github_issue.py         # GitHub Issue creation via PyGithub
 ├── state/
-│   └── dedup.py                # JSON-file-based deduplication (data/seen.json)
+│   ├── dedup.py                # JSON-file-based deduplication (data/seen.json)
+│   └── run_logger.py           # Appends structured run records to data/run-log.json
 ├── modules/
 │   ├── email_sender/           # INDEPENDENT MODULE: Bilingual email
 │   │   ├── smtp_client.py      # Gmail SMTP wrapper
@@ -41,8 +42,9 @@ src/
 3. Filter → keyword matching against `config/keywords.yaml`, score ≥ threshold
 4. Format → structured Markdown
 5. Notify → create GitHub Issue (label: `daily-update`)
-6. Email → English to EMAIL_EN, Claude-translated Chinese to EMAIL_CN
-7. Persist → update `data/seen.json`, auto-commit via GitHub Actions
+6. Email → English to EMAIL_EN list, Claude-translated Chinese to EMAIL_CN list (comma-separated for multiple recipients)
+7. Log → append run stats to `data/run-log.json` (collected/dedup/filter counts, issue URL, errors)
+8. Persist → update `data/seen.json` + `data/run-log.json`, auto-commit via GitHub Actions
 
 ### Weekly (`weekly.py`)
 1. Triggered by `/weekly-summary` comment on any issue, or manual workflow_dispatch
@@ -63,8 +65,8 @@ src/
 | `GITHUB_TOKEN` | Auto-provided by Actions. Used for Issue creation and repo API calls. |
 | `GMAIL_ADDRESS` | Sender Gmail address for SMTP |
 | `GMAIL_APP_PASSWORD` | Gmail App Password (16-char, NOT login password) |
-| `EMAIL_EN` | Recipient for English version |
-| `EMAIL_CN` | Recipient for Chinese translated version |
+| `EMAIL_EN` | Recipient(s) for English version (comma-separated for multiple) |
+| `EMAIL_CN` | Recipient(s) for Chinese translated version (comma-separated for multiple) |
 | `LLM_API_KEY` | Anthropic Claude API key for translation |
 
 ## Key Design Decisions
@@ -107,7 +109,7 @@ Edit `config/settings.yaml` → `filter.min_score`. Lower = more items, higher =
 ## Known Issues / Limitations
 
 - GitHub Trending scraping depends on page structure. If GitHub changes their HTML, `github_collector.py` may break.
-- arXiv API can be slow and occasionally rate-limits. The collector has basic error handling but no retry logic.
+- arXiv API can be slow and occasionally rate-limits. The collector has retry logic (3 retries) and uses `max(published, updated)` to catch revised papers. `lookback_days=3` covers weekends when arXiv has no new papers.
 - Papers with Code API fetches the latest papers globally, not filtered by area before keyword matching. Could be optimized.
 - Translation cost: each daily email translates the full Issue body via Claude API. For typical daily reports this is minimal (< $0.01/day).
 - `seen.json` can grow large if many items are collected daily. Auto-pruning keeps only the last 30 days.

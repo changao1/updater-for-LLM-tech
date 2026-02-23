@@ -22,6 +22,7 @@ from src.filters.keyword_filter import filter_items, load_keywords
 from src.formatters.issue_formatter import format_daily_issue
 from src.notifiers.github_issue import create_issue
 from src.state.dedup import DedupStore
+from src.state.run_logger import append_run_record
 from src.modules.email_sender.bilingual import BilingualSender
 
 # Configure logging
@@ -64,6 +65,11 @@ def main():
         retention_days=settings.get("dedup", {}).get("retention_days", 30)
     )
 
+    # Track stats and errors for run log
+    run_errors: list[str] = []
+    issue_url = None
+    email_results = {"en": False, "cn": False}
+
     # ── Collect ──────────────────────────────────────────────────────────
     logger.info("=== Starting data collection ===")
 
@@ -74,6 +80,7 @@ def main():
         arxiv_papers = arxiv_collector.collect(sources.get("arxiv", {}))
     except Exception as e:
         logger.error(f"arXiv collection failed: {e}")
+        run_errors.append(f"arXiv collection failed: {e}")
 
     # GitHub
     logger.info("Collecting from GitHub...")
@@ -83,6 +90,7 @@ def main():
         github_items = github_collector.collect(sources.get("github", {}), github_token)
     except Exception as e:
         logger.error(f"GitHub collection failed: {e}")
+        run_errors.append(f"GitHub collection failed: {e}")
 
     # Papers with Code
     logger.info("Collecting from Papers with Code...")
@@ -91,11 +99,17 @@ def main():
         pwc_papers = pwc_collector.collect(sources.get("papers_with_code", {}))
     except Exception as e:
         logger.error(f"Papers with Code collection failed: {e}")
+        run_errors.append(f"Papers with Code collection failed: {e}")
 
+    collected_stats = {
+        "arxiv": len(arxiv_papers),
+        "github": len(github_items),
+        "pwc": len(pwc_papers),
+    }
     logger.info(
-        f"Collected: {len(arxiv_papers)} arXiv, "
-        f"{len(github_items)} GitHub, "
-        f"{len(pwc_papers)} PWC"
+        f"Collected: {collected_stats['arxiv']} arXiv, "
+        f"{collected_stats['github']} GitHub, "
+        f"{collected_stats['pwc']} PWC"
     )
 
     # ── Dedup ────────────────────────────────────────────────────────────
@@ -104,17 +118,28 @@ def main():
     github_items = dedup.filter_unseen(github_items)
     pwc_papers = dedup.filter_unseen(pwc_papers)
 
+    dedup_stats = {
+        "arxiv": len(arxiv_papers),
+        "github": len(github_items),
+        "pwc": len(pwc_papers),
+    }
+
     # ── Filter ───────────────────────────────────────────────────────────
     logger.info("=== Filtering by keyword relevance ===")
     arxiv_filtered = filter_items(arxiv_papers, keywords, min_score)[:max_items]
     github_filtered = filter_items(github_items, keywords, min_score)[:max_items]
     pwc_filtered = filter_items(pwc_papers, keywords, min_score)[:max_items]
 
-    total = len(arxiv_filtered) + len(github_filtered) + len(pwc_filtered)
+    filter_stats = {
+        "arxiv": len(arxiv_filtered),
+        "github": len(github_filtered),
+        "pwc": len(pwc_filtered),
+    }
+    total = sum(filter_stats.values())
     logger.info(
-        f"After filtering: {len(arxiv_filtered)} arXiv, "
-        f"{len(github_filtered)} GitHub, "
-        f"{len(pwc_filtered)} PWC "
+        f"After filtering: {filter_stats['arxiv']} arXiv, "
+        f"{filter_stats['github']} GitHub, "
+        f"{filter_stats['pwc']} PWC "
         f"(total: {total})"
     )
 
@@ -133,6 +158,7 @@ def main():
         logger.info(f"Issue created: {issue_url}")
     else:
         logger.warning("Failed to create Issue (may be running locally without GITHUB_TOKEN)")
+        run_errors.append("Failed to create GitHub Issue")
 
     # ── Send bilingual email ─────────────────────────────────────────────
     if email_settings.get("enabled") and email_settings.get("daily_enabled"):
@@ -140,20 +166,36 @@ def main():
         try:
             sender = BilingualSender()
             subject_prefix = email_settings.get("subject_prefix", "[LLM Update]")
-            results = sender.send(
+            email_results = sender.send(
                 content_md=issue_body,
                 subject=issue_title,
                 subject_prefix=subject_prefix,
             )
-            logger.info(f"Email results: EN={results['en']}, CN={results['cn']}")
+            logger.info(f"Email results: EN={email_results['en']}, CN={email_results['cn']}")
         except Exception as e:
             logger.error(f"Email sending failed: {e}")
+            run_errors.append(f"Email sending failed: {e}")
     else:
         logger.info("Email sending disabled in settings")
 
     # ── Save dedup state ─────────────────────────────────────────────────
     logger.info("=== Saving dedup state ===")
     dedup.save()
+
+    # ── Append run log ───────────────────────────────────────────────────
+    logger.info("=== Writing run log ===")
+    try:
+        append_run_record(
+            run_type="daily",
+            collected=collected_stats,
+            after_dedup=dedup_stats,
+            after_filter=filter_stats,
+            issue_url=issue_url,
+            email_results=email_results,
+            errors=run_errors,
+        )
+    except Exception as e:
+        logger.error(f"Failed to write run log: {e}")
 
     logger.info("=== Daily update completed ===")
     return total

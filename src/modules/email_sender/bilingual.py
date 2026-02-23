@@ -47,24 +47,35 @@ hr {{ border: 0; border-top: 1px solid #eaecef; margin: 24px 0; }}
 
 
 class BilingualSender:
-    """Send bilingual emails: English to Email A, Chinese to Email B."""
+    """Send bilingual emails: English to Email A list, Chinese to Email B list.
+
+    Supports multiple recipients per language. Set EMAIL_EN / EMAIL_CN as
+    comma-separated addresses (e.g. "a@example.com, b@example.com").
+    """
 
     def __init__(
         self,
-        email_en: str | None = None,
-        email_cn: str | None = None,
+        email_en: str | list[str] | None = None,
+        email_cn: str | list[str] | None = None,
         smtp_client: SmtpClient | None = None,
         translator: Translator | None = None,
     ):
-        self.email_en = email_en or os.environ.get("EMAIL_EN", "")
-        self.email_cn = email_cn or os.environ.get("EMAIL_CN", "")
+        # Accept comma-separated strings or lists
+        raw_en = email_en or os.environ.get("EMAIL_EN", "")
+        raw_cn = email_cn or os.environ.get("EMAIL_CN", "")
+        self.emails_en = SmtpClient._parse_recipients(raw_en)
+        self.emails_cn = SmtpClient._parse_recipients(raw_cn)
         self.smtp = smtp_client or SmtpClient()
         self.translator = translator or Translator()
 
-        if not self.email_en:
+        if not self.emails_en:
             logger.warning("EMAIL_EN not configured")
-        if not self.email_cn:
+        else:
+            logger.info(f"English recipients: {self.emails_en}")
+        if not self.emails_cn:
             logger.warning("EMAIL_CN not configured")
+        else:
+            logger.info(f"Chinese recipients: {self.emails_cn}")
 
     def send(
         self,
@@ -80,17 +91,17 @@ class BilingualSender:
             subject_prefix: Prefix for the subject line.
 
         Returns:
-            Dict with send status for each email: {"en": bool, "cn": bool}.
+            Dict with send status: {"en": bool, "cn": bool}.
         """
         results = {"en": False, "cn": False}
         full_subject_en = f"{subject_prefix} {subject}"
 
-        # 1. Send English version to Email A
-        if self.email_en:
-            logger.info(f"Sending English email to {self.email_en}")
+        # 1. Send English version to all EN recipients
+        if self.emails_en:
+            logger.info(f"Sending English email to {self.emails_en}")
             html_en = _markdown_to_html(content_md)
             results["en"] = self.smtp.send(
-                to=self.email_en,
+                to=self.emails_en,
                 subject=full_subject_en,
                 body_html=html_en,
                 body_text=content_md,
@@ -98,15 +109,15 @@ class BilingualSender:
         else:
             logger.warning("Skipping English email: EMAIL_EN not configured")
 
-        # 2. Translate to Chinese and send to Email B
-        if self.email_cn:
+        # 2. Translate to Chinese and send to all CN recipients
+        if self.emails_cn:
             logger.info("Translating content to Chinese...")
             content_cn = self.translator.translate_to_chinese(content_md)
             full_subject_cn = f"{subject_prefix} {subject} (Chinese)"
 
             html_cn = _markdown_to_html(content_cn)
             results["cn"] = self.smtp.send(
-                to=self.email_cn,
+                to=self.emails_cn,
                 subject=full_subject_cn,
                 body_html=html_cn,
                 body_text=content_cn,

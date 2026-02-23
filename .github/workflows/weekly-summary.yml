@@ -9,7 +9,7 @@ on:
 
 permissions:
   issues: write
-  contents: read
+  contents: write
 
 jobs:
   weekly-summary:
@@ -43,6 +43,13 @@ jobs:
           EMAIL_CN: ${{ secrets.EMAIL_CN }}
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
         run: python src/weekly.py
+
+      - name: Commit updated run log
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/run-log.json
+          git diff --cached --quiet || (git commit -m "chore: update run log [skip ci]" && git push)
 
       - name: Acknowledge trigger (if from issue comment)
         if: github.event_name == 'issue_comment'

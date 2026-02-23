@@ -21,6 +21,7 @@ from src.modules.weekly_summary.aggregator import aggregate_weekly
 from src.modules.weekly_summary.ranker import rank_items
 from src.modules.weekly_summary.formatter import format_weekly_summary
 from src.notifiers.github_issue import create_issue
+from src.state.run_logger import append_run_record
 from src.modules.email_sender.bilingual import BilingualSender
 
 # Configure logging
@@ -47,14 +48,17 @@ def main():
     top_n = weekly_settings.get("top_n", 20)
     daily_label = issue_settings.get("daily_labels", ["daily-update"])[0]
 
+    # Track stats and errors for run log
+    run_errors: list[str] = []
+    issue_url = None
+    email_results = {"en": False, "cn": False}
+
     # ── Aggregate ────────────────────────────────────────────────────────
     logger.info(f"=== Aggregating items from the last {lookback_days} days ===")
     items = aggregate_weekly(label=daily_label, days=lookback_days)
 
     if not items:
-        logger.warning("No items found to aggregate. Exiting.")
-        # Still create an empty summary issue to acknowledge the request
-        pass
+        logger.warning("No items found to aggregate.")
 
     # ── Rank ─────────────────────────────────────────────────────────────
     logger.info("=== Ranking items ===")
@@ -75,6 +79,7 @@ def main():
         logger.info(f"Weekly summary Issue created: {issue_url}")
     else:
         logger.warning("Failed to create weekly summary Issue")
+        run_errors.append("Failed to create weekly summary Issue")
 
     # ── Send bilingual email ─────────────────────────────────────────────
     if email_settings.get("enabled") and email_settings.get("weekly_enabled"):
@@ -82,16 +87,32 @@ def main():
         try:
             sender = BilingualSender()
             subject_prefix = email_settings.get("subject_prefix", "[LLM Update]")
-            results = sender.send(
+            email_results = sender.send(
                 content_md=issue_body,
                 subject=issue_title,
                 subject_prefix=subject_prefix,
             )
-            logger.info(f"Email results: EN={results['en']}, CN={results['cn']}")
+            logger.info(f"Email results: EN={email_results['en']}, CN={email_results['cn']}")
         except Exception as e:
             logger.error(f"Email sending failed: {e}")
+            run_errors.append(f"Email sending failed: {e}")
     else:
         logger.info("Email sending disabled in settings")
+
+    # ── Append run log ───────────────────────────────────────────────────
+    logger.info("=== Writing run log ===")
+    try:
+        append_run_record(
+            run_type="weekly",
+            collected={"aggregated_items": len(items)},
+            after_dedup={"unique_items": len(items)},
+            after_filter={"top_items": len(top_items)},
+            issue_url=issue_url,
+            email_results=email_results,
+            errors=run_errors,
+        )
+    except Exception as e:
+        logger.error(f"Failed to write run log: {e}")
 
     logger.info("=== Weekly summary completed ===")
     return len(top_items)

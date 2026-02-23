@@ -233,7 +233,8 @@ The workflow was triggered manually from the GitHub Actions tab. Result:
 These are potential enhancements identified during development but not yet implemented:
 
 ### High Priority
-- **Retry logic for arXiv API** — Currently no retries on rate-limit or timeout
+- ~~**Retry logic for arXiv API**~~ — Implemented in v0.2 (3 retries, `max(published, updated)` date handling)
+- ~~**Multiple email recipients**~~ — Implemented in v0.2 (comma-separated in secrets)
 - **Error notification** — Send an alert if the daily workflow fails (could use GitHub Actions failure notification)
 - **Configurable cron schedule** — Allow changing the daily run time without editing YAML
 
@@ -257,3 +258,35 @@ These are potential enhancements identified during development but not yet imple
 - **Test coverage** — No unit tests exist yet. Priority areas: keyword filter, dedup store, Issue body parser
 - **Type checking** — Add `mypy` configuration and fix type annotations
 - **CI pipeline** — Add linting (ruff) and type checking to PR workflow
+
+---
+
+## Changelog
+
+### v0.2 — 2026-02-23
+
+Three improvements applied after first successful production run:
+
+**1. Multiple email recipients**
+- `smtp_client.py`: `send()` now accepts `str | list[str]` for the `to` parameter. Internally parses comma-separated strings.
+- `bilingual.py`: Reads `EMAIL_EN` / `EMAIL_CN` as comma-separated lists. All recipients receive the same email in a single SMTP call.
+- Usage: Set `EMAIL_EN=alice@gmail.com,bob@outlook.com` in GitHub Secrets.
+
+**2. arXiv collection fix**
+- Root cause: First test ran on a weekend (arXiv publishes no new papers Sat/Sun). `lookback_days: 2` was too short to bridge weekend gaps.
+- Fix 1: Increased `lookback_days` from 2 → 3 in `sources.yaml`.
+- Fix 2: Fixed timezone handling — replaced unsafe `datetime.replace(tzinfo=...)` with proper `_to_utc()` helper that handles both naive and aware datetimes.
+- Fix 3: Now uses `max(published, updated)` as the effective date, so revised papers are also caught.
+- Fix 4: Added `num_retries=3` to the arXiv client for resilience against rate-limits.
+- Fix 5: Added detailed logging: raw result count, date-filtered count, final count.
+
+**3. Automated run logging**
+- New module: `src/state/run_logger.py` — appends a structured JSON record after each daily/weekly run.
+- Records: timestamp, run type, collected/dedup/filter counts per source, issue URL, email status, errors.
+- Storage: `data/run-log.json` (auto-committed by GitHub Actions alongside `seen.json`).
+- Max 200 records retained (auto-prunes older entries).
+- Both `main.py` and `weekly.py` now call `append_run_record()` at the end of each run.
+- Both GitHub Actions workflows updated to commit `data/run-log.json`.
+- `CLAUDE.md` updated to reflect new architecture (run_logger, multi-recipient email, arXiv improvements).
+
+**Documentation convention established**: When making code changes to this project, always update `CLAUDE.md` (architecture/conventions) and append a changelog entry to this file.

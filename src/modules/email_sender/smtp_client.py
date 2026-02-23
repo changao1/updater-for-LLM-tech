@@ -28,26 +28,50 @@ class SmtpClient:
         if not self.smtp_user or not self.smtp_password:
             logger.warning("GMAIL_ADDRESS or GMAIL_APP_PASSWORD not configured")
 
+    @staticmethod
+    def _parse_recipients(to: str | list[str]) -> list[str]:
+        """Parse recipient(s) into a flat list of email addresses.
+
+        Supports:
+            - Single address: "a@example.com"
+            - Comma-separated string: "a@example.com, b@example.com"
+            - List of addresses: ["a@example.com", "b@example.com"]
+
+        Returns:
+            List of stripped, non-empty email addresses.
+        """
+        if isinstance(to, str):
+            addresses = to.split(",")
+        else:
+            addresses = to
+        return [addr.strip() for addr in addresses if addr.strip()]
+
     def send(
         self,
-        to: str,
+        to: str | list[str],
         subject: str,
         body_html: str,
         body_text: str = "",
     ) -> bool:
-        """Send an email.
+        """Send an email to one or more recipients.
 
         Args:
-            to: Recipient email address.
+            to: Recipient email address(es). Accepts a single address,
+                a comma-separated string, or a list of addresses.
             subject: Email subject.
             body_html: HTML body content.
             body_text: Plain text fallback (auto-generated from HTML if empty).
 
         Returns:
-            True if sent successfully.
+            True if sent successfully to all recipients.
         """
         if not self.smtp_user or not self.smtp_password:
             logger.error("SMTP credentials not configured, skipping email")
+            return False
+
+        recipients = self._parse_recipients(to)
+        if not recipients:
+            logger.error("No valid recipients provided, skipping email")
             return False
 
         if not body_text:
@@ -57,7 +81,7 @@ class SmtpClient:
 
         msg = MIMEMultipart("alternative")
         msg["From"] = self.smtp_user
-        msg["To"] = to
+        msg["To"] = ", ".join(recipients)
         msg["Subject"] = subject
 
         msg.attach(MIMEText(body_text, "plain", "utf-8"))
@@ -69,11 +93,11 @@ class SmtpClient:
                 server.starttls()
                 server.ehlo()
                 server.login(self.smtp_user, self.smtp_password)
-                server.sendmail(self.smtp_user, to, msg.as_string())
+                server.sendmail(self.smtp_user, recipients, msg.as_string())
 
-            logger.info(f"Email sent to {to}: {subject}")
+            logger.info(f"Email sent to {recipients}: {subject}")
             return True
 
         except Exception as e:
-            logger.error(f"Failed to send email to {to}: {e}")
+            logger.error(f"Failed to send email to {recipients}: {e}")
             return False

@@ -9,8 +9,8 @@ arxiv:
     - cs.SE   # Software Engineering (for coding-related)
   # Maximum number of papers to fetch per run
   max_results: 200
-  # Only fetch papers from the last N days
-  lookback_days: 2
+  # Only fetch papers from the last N days (3 covers weekends when arXiv has no new papers)
+  lookback_days: 3
 
 github:
   # Organizations/users to track for new releases

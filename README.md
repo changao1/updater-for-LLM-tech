@@ -44,8 +44,8 @@ Add the following secrets:
 |---|---|---|
 | `GMAIL_ADDRESS` | Gmail address used to send emails (e.g. `yourname@gmail.com`) | Yes (for email) |
 | `GMAIL_APP_PASSWORD` | Gmail App Password (NOT your login password, see below) | Yes (for email) |
-| `EMAIL_EN` | Email address to receive English version | Yes (for email) |
-| `EMAIL_CN` | Email address to receive Chinese version | Yes (for email) |
+| `EMAIL_EN` | Email address(es) to receive English version. Comma-separated for multiple: `a@example.com,b@example.com` | Yes (for email) |
+| `EMAIL_CN` | Email address(es) to receive Chinese version. Comma-separated for multiple: `a@example.com,b@example.com` | Yes (for email) |
 | `LLM_API_KEY` | Anthropic Claude API key (for translation) | Yes (for Chinese email) |
 
 > **Note**: `GITHUB_TOKEN` is automatically provided by GitHub Actions. You do NOT need to add it manually.
