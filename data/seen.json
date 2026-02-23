@@ -1,5 +1,170 @@
 {
   "arxiv": [],
-  "github": [],
+  "github": [
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8132",
+      "seen_at": "2026-02-23T06:02:29.536025+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8131",
+      "seen_at": "2026-02-23T06:02:29.536049+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8130",
+      "seen_at": "2026-02-23T06:02:29.536058+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8128",
+      "seen_at": "2026-02-23T06:02:29.536070+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8126",
+      "seen_at": "2026-02-23T06:02:29.536079+00:00"
+    },
+    {
+      "id": "github:release:ollama/ollama:v0.17.0-rc2",
+      "seen_at": "2026-02-23T06:02:29.536088+00:00"
+    },
+    {
+      "id": "github:trending:huggingface/skills",
+      "seen_at": "2026-02-23T06:02:29.536098+00:00"
+    },
+    {
+      "id": "github:trending:OpenBB-finance/OpenBB",
+      "seen_at": "2026-02-23T06:02:29.536107+00:00"
+    },
+    {
+      "id": "github:trending:mihail911/modern-software-dev-assignments",
+      "seen_at": "2026-02-23T06:02:29.536116+00:00"
+    },
+    {
+      "id": "github:trending:yt-dlp/yt-dlp",
+      "seen_at": "2026-02-23T06:02:29.536125+00:00"
+    },
+    {
+      "id": "github:trending:openai/evals",
+      "seen_at": "2026-02-23T06:02:29.536133+00:00"
+    },
+    {
+      "id": "github:trending:opengeos/geoai",
+      "seen_at": "2026-02-23T06:02:29.536142+00:00"
+    },
+    {
+      "id": "github:trending:Zie619/n8n-workflows",
+      "seen_at": "2026-02-23T06:02:29.536152+00:00"
+    },
+    {
+      "id": "github:trending:agno-agi/agno",
+      "seen_at": "2026-02-23T06:02:29.536161+00:00"
+    },
+    {
+      "id": "github:trending:RichardAtCT/claude-code-telegram",
+      "seen_at": "2026-02-23T06:02:29.536170+00:00"
+    },
+    {
+      "id": "github:trending:Netflix/metaflow",
+      "seen_at": "2026-02-23T06:02:29.536180+00:00"
+    },
+    {
+      "id": "github:trending:PostHog/posthog",
+      "seen_at": "2026-02-23T06:02:29.536189+00:00"
+    },
+    {
+      "id": "github:trending:roboflow/trackers",
+      "seen_at": "2026-02-23T06:02:29.536199+00:00"
+    },
+    {
+      "id": "github:trending:OpenBMB/UltraRAG",
+      "seen_at": "2026-02-23T06:02:29.536208+00:00"
+    },
+    {
+      "id": "github:trending:Anjok07/ultimatevocalremovergui",
+      "seen_at": "2026-02-23T06:02:29.536217+00:00"
+    },
+    {
+      "id": "github:trending:microsoft/markitdown",
+      "seen_at": "2026-02-23T06:02:29.536224+00:00"
+    },
+    {
+      "id": "github:trending:google-research/timesfm",
+      "seen_at": "2026-02-23T06:02:29.536232+00:00"
+    },
+    {
+      "id": "github:trending:usestrix/strix",
+      "seen_at": "2026-02-23T06:02:29.536241+00:00"
+    },
+    {
+      "id": "github:trending:ahujasid/blender-mcp",
+      "seen_at": "2026-02-23T06:02:29.536250+00:00"
+    },
+    {
+      "id": "github:trending:wagtail/wagtail",
+      "seen_at": "2026-02-23T06:02:29.536260+00:00"
+    },
+    {
+      "id": "github:trending:lyogavin/airllm",
+      "seen_at": "2026-02-23T06:02:29.536307+00:00"
+    },
+    {
+      "id": "github:trending:HandsOnLLM/Hands-On-Large-Language-Models",
+      "seen_at": "2026-02-23T06:02:29.536318+00:00"
+    },
+    {
+      "id": "github:trending:CompVis/stable-diffusion",
+      "seen_at": "2026-02-23T06:02:29.536329+00:00"
+    },
+    {
+      "id": "github:trending:AI4Finance-Foundation/FinGPT",
+      "seen_at": "2026-02-23T06:02:29.536339+00:00"
+    },
+    {
+      "id": "github:trending:Nixtla/nixtla",
+      "seen_at": "2026-02-23T06:02:29.536350+00:00"
+    },
+    {
+      "id": "github:trending:PolymathicAI/the_well",
+      "seen_at": "2026-02-23T06:02:29.536361+00:00"
+    },
+    {
+      "id": "github:trending:langchain-ai/langchain-academy",
+      "seen_at": "2026-02-23T06:02:29.536373+00:00"
+    },
+    {
+      "id": "github:trending:AI4Finance-Foundation/FinRL",
+      "seen_at": "2026-02-23T06:02:29.536390+00:00"
+    },
+    {
+      "id": "github:trending:Ceyron/exponax",
+      "seen_at": "2026-02-23T06:02:29.536403+00:00"
+    },
+    {
+      "id": "github:trending:Arize-ai/phoenix",
+      "seen_at": "2026-02-23T06:02:29.536416+00:00"
+    },
+    {
+      "id": "github:trending:facebookresearch/segment-anything",
+      "seen_at": "2026-02-23T06:02:29.536429+00:00"
+    },
+    {
+      "id": "github:trending:jackfrued/Python-100-Days",
+      "seen_at": "2026-02-23T06:02:29.536442+00:00"
+    },
+    {
+      "id": "github:trending:ed-donner/production",
+      "seen_at": "2026-02-23T06:02:29.536455+00:00"
+    },
+    {
+      "id": "github:trending:crewAIInc/crewAI-examples",
+      "seen_at": "2026-02-23T06:02:29.536468+00:00"
+    },
+    {
+      "id": "github:trending:maxim5/cs229-2018-autumn",
+      "seen_at": "2026-02-23T06:02:29.536482+00:00"
+    },
+    {
+      "id": "github:trending:h2oai/h2o-3",
+      "seen_at": "2026-02-23T06:02:29.536496+00:00"
+    }
+  ],
   "pwc": []
 }
