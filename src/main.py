@@ -24,6 +24,7 @@ from src.notifiers.github_issue import create_issue
 from src.state.dedup import DedupStore
 from src.state.run_logger import append_run_record
 from src.modules.email_sender.bilingual import BilingualSender
+from src.modules.summarizer import Summarizer
 
 # Configure logging
 logging.basicConfig(
@@ -143,10 +144,24 @@ def main():
         f"(total: {total})"
     )
 
+    # ── Summarize ─────────────────────────────────────────────────────────
+    logger.info("=== Generating bilingual summaries ===")
+    try:
+        all_filtered = arxiv_filtered + github_filtered + pwc_filtered
+        summarizer = Summarizer()
+        summarizer.summarize(all_filtered)
+    except Exception as e:
+        logger.error(f"Summarization failed (will use truncated abstracts): {e}")
+        run_errors.append(f"Summarization failed: {e}")
+
     # ── Format ───────────────────────────────────────────────────────────
     logger.info("=== Formatting issue ===")
     issue_title, issue_body = format_daily_issue(
-        arxiv_filtered, github_filtered, pwc_filtered
+        arxiv_filtered, github_filtered, pwc_filtered, lang="en"
+    )
+    # Generate CN version with Chinese summaries for the CN email
+    _, issue_body_cn = format_daily_issue(
+        arxiv_filtered, github_filtered, pwc_filtered, lang="cn"
     )
 
     # ── Create GitHub Issue ──────────────────────────────────────────────
@@ -170,6 +185,7 @@ def main():
                 content_md=issue_body,
                 subject=issue_title,
                 subject_prefix=subject_prefix,
+                content_cn=issue_body_cn,
             )
             logger.info(f"Email results: EN={email_results['en']}, CN={email_results['cn']}")
         except Exception as e:

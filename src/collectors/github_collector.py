@@ -34,6 +34,8 @@ class GitHubItem:
     source: str = "github"
     matched_categories: list[str] = field(default_factory=list)
     relevance_score: float = 0.0
+    summary_en: str = ""
+    summary_cn: str = ""
 
     @property
     def unique_id(self) -> str:

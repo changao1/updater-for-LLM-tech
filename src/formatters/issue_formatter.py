@@ -24,11 +24,39 @@ def _truncate(text: str, max_len: int = 300) -> str:
     return text[:max_len].rstrip() + "..."
 
 
-def format_arxiv_section(papers: list) -> str:
+def _get_summary(item, lang: str, fallback_field: str) -> str:
+    """Get the appropriate summary text for an item.
+
+    If a Claude-generated summary exists for the requested language, use it.
+    Otherwise fall back to the truncated original text.
+
+    Args:
+        item: A data item (ArxivPaper, GitHubItem, or PwcPaper).
+        lang: Language code - "en" or "cn".
+        fallback_field: Attribute name to use as fallback (e.g. "abstract", "description").
+
+    Returns:
+        The summary or truncated fallback text.
+    """
+    if lang == "cn":
+        summary = getattr(item, "summary_cn", "")
+        if summary:
+            return summary
+    # For "en" or if CN summary is missing, try EN summary
+    summary = getattr(item, "summary_en", "")
+    if summary:
+        return summary
+    # Fallback to original truncated text
+    fallback = getattr(item, fallback_field, "")
+    return _truncate(fallback) if fallback else ""
+
+
+def format_arxiv_section(papers: list, lang: str = "en") -> str:
     """Format arXiv papers into Markdown.
 
     Args:
         papers: List of ArxivPaper objects (already filtered and scored).
+        lang: Language for summaries - "en" or "cn".
 
     Returns:
         Markdown string for the arXiv section.
@@ -50,17 +78,22 @@ def format_arxiv_section(papers: list) -> str:
                       f"**Topics**: {cats}")
         lines.append(f"**Authors**: {authors} | "
                       f"**Categories**: {', '.join(paper.categories[:3])}")
-        lines.append(f"\n> {_truncate(paper.abstract)}\n")
+
+        summary_text = _get_summary(paper, lang, "abstract")
+        if summary_text:
+            lines.append(f"\n> {summary_text}\n")
+
         lines.append(f"[PDF]({paper.pdf_url})\n")
 
     return "\n".join(lines)
 
 
-def format_github_section(items: list) -> str:
+def format_github_section(items: list, lang: str = "en") -> str:
     """Format GitHub items into Markdown.
 
     Args:
         items: List of GitHubItem objects (already filtered and scored).
+        lang: Language for summaries - "en" or "cn".
 
     Returns:
         Markdown string for the GitHub section.
@@ -83,8 +116,9 @@ def format_github_section(items: list) -> str:
             lines.append(f"**{i}. [{item.repo_name}]({item.url})**{tag_str}")
             lines.append(f"Relevance: {badge} (score: {item.relevance_score})"
                           + (f" | Topics: {cats}" if cats else ""))
-            if item.description:
-                lines.append(f"\n> {_truncate(item.description)}\n")
+            summary_text = _get_summary(item, lang, "description")
+            if summary_text:
+                lines.append(f"\n> {summary_text}\n")
             else:
                 lines.append("")
 
@@ -102,19 +136,21 @@ def format_github_section(items: list) -> str:
                           + (f" | Topics: {cats}" if cats else ""))
             if item.language:
                 lines.append(f"Language: {item.language}")
-            if item.description:
-                lines.append(f"\n> {_truncate(item.description)}\n")
+            summary_text = _get_summary(item, lang, "description")
+            if summary_text:
+                lines.append(f"\n> {summary_text}\n")
             else:
                 lines.append("")
 
     return "\n".join(lines)
 
 
-def format_pwc_section(papers: list) -> str:
+def format_pwc_section(papers: list, lang: str = "en") -> str:
     """Format Papers with Code items into Markdown.
 
     Args:
         papers: List of PwcPaper objects (already filtered and scored).
+        lang: Language for summaries - "en" or "cn".
 
     Returns:
         Markdown string for the PWC section.
@@ -138,8 +174,9 @@ def format_pwc_section(papers: list) -> str:
                 authors += " et al."
             lines.append(f"**Authors**: {authors}")
 
-        if paper.abstract:
-            lines.append(f"\n> {_truncate(paper.abstract)}\n")
+        summary_text = _get_summary(paper, lang, "abstract")
+        if summary_text:
+            lines.append(f"\n> {summary_text}\n")
 
         link_parts = []
         if paper.url_pdf:
@@ -158,14 +195,18 @@ def format_daily_issue(
     github_items: list,
     pwc_papers: list,
     date_str: str | None = None,
+    lang: str = "en",
 ) -> tuple[str, str]:
     """Format all sections into a complete daily update Issue.
+
+    Sections are ordered: GitHub -> arXiv -> Papers with Code.
 
     Args:
         arxiv_papers: Filtered arXiv papers.
         github_items: Filtered GitHub items.
         pwc_papers: Filtered PWC papers.
         date_str: Date string for the title (default: today).
+        lang: Language for summaries - "en" or "cn".
 
     Returns:
         Tuple of (issue_title, issue_body).
@@ -179,26 +220,26 @@ def format_daily_issue(
 
     body_parts = [f"# LLM Research & Tech Daily Update - {date_str}\n"]
 
-    # Summary line
+    # Summary line (GitHub first to match section order)
     body_parts.append(
-        f"**{len(arxiv_papers)}** papers | "
         f"**{len(github_items)}** GitHub updates | "
+        f"**{len(arxiv_papers)}** arXiv papers | "
         f"**{len(pwc_papers)}** Papers with Code\n"
     )
     body_parts.append("---\n")
 
-    # Sections
-    arxiv_md = format_arxiv_section(arxiv_papers)
-    if arxiv_md:
-        body_parts.append(arxiv_md)
-        body_parts.append("---\n")
-
-    github_md = format_github_section(github_items)
+    # Sections: GitHub first, then arXiv, then PwC
+    github_md = format_github_section(github_items, lang=lang)
     if github_md:
         body_parts.append(github_md)
         body_parts.append("---\n")
 
-    pwc_md = format_pwc_section(pwc_papers)
+    arxiv_md = format_arxiv_section(arxiv_papers, lang=lang)
+    if arxiv_md:
+        body_parts.append(arxiv_md)
+        body_parts.append("---\n")
+
+    pwc_md = format_pwc_section(pwc_papers, lang=lang)
     if pwc_md:
         body_parts.append(pwc_md)
         body_parts.append("---\n")

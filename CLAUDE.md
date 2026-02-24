@@ -22,9 +22,10 @@ src/
 │   ├── dedup.py                # JSON-file-based deduplication (data/seen.json)
 │   └── run_logger.py           # Appends structured run records to data/run-log.json
 ├── modules/
+│   ├── summarizer.py            # Claude API bilingual summarization (EN+CN)
 │   ├── email_sender/           # INDEPENDENT MODULE: Bilingual email
 │   │   ├── smtp_client.py      # Gmail SMTP wrapper
-│   │   ├── translator.py       # Claude API translation (EN→CN)
+│   │   ├── translator.py       # Claude API translation (EN→CN, used by weekly)
 │   │   └── bilingual.py        # Orchestrates: EN→Email A, CN→Email B
 │   └── weekly_summary/         # INDEPENDENT MODULE: Weekly digest
 │       ├── aggregator.py       # Parses past daily Issues via GitHub API
@@ -40,11 +41,12 @@ src/
 1. Collect → arXiv, GitHub (releases + trending), Papers with Code
 2. Dedup → filter out previously seen items (`data/seen.json`)
 3. Filter → keyword matching against `config/keywords.yaml`, score ≥ threshold
-4. Format → structured Markdown
-5. Notify → create GitHub Issue (label: `daily-update`)
-6. Email → English to EMAIL_EN list, Claude-translated Chinese to EMAIL_CN list (comma-separated for multiple recipients)
-7. Log → append run stats to `data/run-log.json` (collected/dedup/filter counts, issue URL, errors)
-8. Persist → update `data/seen.json` + `data/run-log.json`, auto-commit via GitHub Actions
+4. Summarize → Claude API generates bilingual (EN+CN) 2-3 sentence key-point summaries for each item
+5. Format → structured Markdown (GitHub section first, then arXiv, then PwC). Two versions: EN body (for Issue + EN email), CN body (with Chinese summaries for CN email)
+6. Notify → create GitHub Issue (label: `daily-update`)
+7. Email → EN body to EMAIL_EN list, CN body (with Chinese summaries) to EMAIL_CN list (comma-separated for multiple recipients)
+8. Log → append run stats to `data/run-log.json` (collected/dedup/filter counts, issue URL, errors)
+9. Persist → update `data/seen.json` + `data/run-log.json`, auto-commit via GitHub Actions
 
 ### Weekly (`weekly.py`)
 1. Triggered by `/weekly-summary` comment on any issue, or manual workflow_dispatch
@@ -96,8 +98,8 @@ Edit `config/sources.yaml` → `github.tracked_repos`. Append the `owner/repo` s
 
 ### Adding a new data source
 1. Create `src/collectors/new_collector.py` with a `collect(config) -> list[DataClass]` function
-2. The dataclass needs `unique_id` property, `title`, `relevance_score`, `matched_categories` fields
-3. Wire it into `src/main.py` (collect → dedup → filter → format)
+2. The dataclass needs `unique_id` property, `title`, `relevance_score`, `matched_categories`, `summary_en`, `summary_cn` fields
+3. Wire it into `src/main.py` (collect → dedup → filter → summarize → format)
 4. Add a format function in `src/formatters/issue_formatter.py`
 
 ### Changing the translation model
@@ -111,8 +113,12 @@ Edit `config/settings.yaml` → `filter.min_score`. Lower = more items, higher =
 - GitHub Trending scraping depends on page structure. If GitHub changes their HTML, `github_collector.py` may break.
 - arXiv API can be slow and occasionally rate-limits. The collector has retry logic (3 retries) and uses `max(published, updated)` to catch revised papers. `lookback_days=3` covers weekends when arXiv has no new papers.
 - Papers with Code API fetches the latest papers globally, not filtered by area before keyword matching. Could be optimized.
-- Translation cost: each daily email translates the full Issue body via Claude API. For typical daily reports this is minimal (< $0.01/day).
+- Summarization cost: each daily run makes 1-2 Claude API calls to generate bilingual summaries (~12K tokens total). Translation is no longer used for daily emails; only weekly summaries still use full translation.
 - `seen.json` can grow large if many items are collected daily. Auto-pruning keeps only the last 30 days.
+
+## Development Journal
+
+After each set of changes, record what was done in `journal.md` at the project root. Each entry should include the date, a summary of what changed, which files were modified/created, and key design decisions. This helps maintain a clear history of the project's evolution beyond what git commits convey.
 
 ## Repository
 

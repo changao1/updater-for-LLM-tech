@@ -82,6 +82,7 @@ class BilingualSender:
         content_md: str,
         subject: str,
         subject_prefix: str = "[LLM Update]",
+        content_cn: str | None = None,
     ) -> dict[str, bool]:
         """Send bilingual emails.
 
@@ -89,6 +90,8 @@ class BilingualSender:
             content_md: Markdown content (English).
             subject: Email subject (without prefix).
             subject_prefix: Prefix for the subject line.
+            content_cn: Pre-generated Chinese Markdown content. If provided,
+                this is used directly and translation is skipped.
 
         Returns:
             Dict with send status: {"en": bool, "cn": bool}.
@@ -109,18 +112,24 @@ class BilingualSender:
         else:
             logger.warning("Skipping English email: EMAIL_EN not configured")
 
-        # 2. Translate to Chinese and send to all CN recipients
+        # 2. Send Chinese version to all CN recipients
         if self.emails_cn:
-            logger.info("Translating content to Chinese...")
-            content_cn = self.translator.translate_to_chinese(content_md)
-            full_subject_cn = f"{subject_prefix} {subject} (Chinese)"
+            if content_cn:
+                # Use pre-generated Chinese content (e.g. with CN summaries)
+                logger.info("Using pre-generated Chinese content for CN email")
+                cn_md = content_cn
+            else:
+                # Fallback: translate the English content
+                logger.info("Translating content to Chinese...")
+                cn_md = self.translator.translate_to_chinese(content_md)
 
-            html_cn = _markdown_to_html(content_cn)
+            full_subject_cn = f"{subject_prefix} {subject} (Chinese)"
+            html_cn = _markdown_to_html(cn_md)
             results["cn"] = self.smtp.send(
                 to=self.emails_cn,
                 subject=full_subject_cn,
                 body_html=html_cn,
-                body_text=content_cn,
+                body_text=cn_md,
             )
         else:
             logger.warning("Skipping Chinese email: EMAIL_CN not configured")
