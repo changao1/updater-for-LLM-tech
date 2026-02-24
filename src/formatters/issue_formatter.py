@@ -7,14 +7,79 @@ from datetime import datetime, timezone
 
 logger = logging.getLogger(__name__)
 
+# ---------------------------------------------------------------------------
+# Localised label maps
+# ---------------------------------------------------------------------------
+_LABELS = {
+    "en": {
+        "github_updates": "GitHub Updates",
+        "new_releases": "New Releases",
+        "trending_repos": "Trending Repos",
+        "arxiv_papers": "arXiv Papers",
+        "papers_with_code": "Papers with Code",
+        "relevance": "Relevance",
+        "score": "score",
+        "topics": "Topics",
+        "authors": "Authors",
+        "categories": "Categories",
+        "language": "Language",
+        "stars": "Stars",
+        "today": "today",
+        "high": "HIGH",
+        "medium": "MEDIUM",
+        "low": "LOW",
+        "daily_title": "LLM Research & Tech Daily Update",
+        "summary_github": "GitHub updates",
+        "summary_arxiv": "arXiv papers",
+        "summary_pwc": "Papers with Code",
+        "no_items": "No new items matching the configured keywords were found today.",
+        "weekly_hint": (
+            "**Generate Weekly Summary**: Comment `/weekly-summary` on this issue "
+            "to trigger a weekly digest of the most important updates."
+        ),
+    },
+    "cn": {
+        "github_updates": "GitHub 更新",
+        "new_releases": "新发布",
+        "trending_repos": "热门仓库",
+        "arxiv_papers": "arXiv 论文",
+        "papers_with_code": "Papers with Code",
+        "relevance": "相关性",
+        "score": "得分",
+        "topics": "主题",
+        "authors": "作者",
+        "categories": "分类",
+        "language": "语言",
+        "stars": "Stars",
+        "today": "今日",
+        "high": "高",
+        "medium": "中等",
+        "low": "低",
+        "daily_title": "LLM 研究与技术日报",
+        "summary_github": "GitHub 更新",
+        "summary_arxiv": "arXiv 论文",
+        "summary_pwc": "Papers with Code",
+        "no_items": "今日没有匹配到符合关键词的新内容。",
+        "weekly_hint": (
+            "**生成周报**: 在此 Issue 下评论 `/weekly-summary` "
+            "即可触发过去一周的重点摘要。"
+        ),
+    },
+}
 
-def _score_badge(score: float) -> str:
+
+def _l(key: str, lang: str) -> str:
+    """Look up a localised label."""
+    return _LABELS.get(lang, _LABELS["en"]).get(key, _LABELS["en"][key])
+
+
+def _score_badge(score: float, lang: str = "en") -> str:
     """Return a visual indicator of relevance score."""
     if score >= 4.0:
-        return "HIGH"
+        return _l("high", lang)
     elif score >= 2.0:
-        return "MEDIUM"
-    return "LOW"
+        return _l("medium", lang)
+    return _l("low", lang)
 
 
 def _truncate(text: str, max_len: int = 300) -> str:
@@ -56,7 +121,7 @@ def format_arxiv_section(papers: list, lang: str = "en") -> str:
 
     Args:
         papers: List of ArxivPaper objects (already filtered and scored).
-        lang: Language for summaries - "en" or "cn".
+        lang: Language for summaries and labels - "en" or "cn".
 
     Returns:
         Markdown string for the arXiv section.
@@ -64,20 +129,25 @@ def format_arxiv_section(papers: list, lang: str = "en") -> str:
     if not papers:
         return ""
 
-    lines = [f"## arXiv Papers ({len(papers)})\n"]
+    lines = [f"## {_l('arxiv_papers', lang)} ({len(papers)})\n"]
 
     for i, paper in enumerate(papers, 1):
-        badge = _score_badge(paper.relevance_score)
+        badge = _score_badge(paper.relevance_score, lang)
         cats = ", ".join(paper.matched_categories) if paper.matched_categories else "general"
         authors = ", ".join(paper.authors[:3])
         if len(paper.authors) > 3:
             authors += " et al."
 
         lines.append(f"### {i}. [{paper.title}]({paper.url})")
-        lines.append(f"**Relevance: {badge}** (score: {paper.relevance_score}) | "
-                      f"**Topics**: {cats}")
-        lines.append(f"**Authors**: {authors} | "
-                      f"**Categories**: {', '.join(paper.categories[:3])}")
+        lines.append(
+            f"**{_l('relevance', lang)}: {badge}** "
+            f"({_l('score', lang)}: {paper.relevance_score}) | "
+            f"**{_l('topics', lang)}**: {cats}"
+        )
+        lines.append(
+            f"**{_l('authors', lang)}**: {authors} | "
+            f"**{_l('categories', lang)}**: {', '.join(paper.categories[:3])}"
+        )
 
         summary_text = _get_summary(paper, lang, "abstract")
         if summary_text:
@@ -93,7 +163,7 @@ def format_github_section(items: list, lang: str = "en") -> str:
 
     Args:
         items: List of GitHubItem objects (already filtered and scored).
-        lang: Language for summaries - "en" or "cn".
+        lang: Language for summaries and labels - "en" or "cn".
 
     Returns:
         Markdown string for the GitHub section.
@@ -104,18 +174,21 @@ def format_github_section(items: list, lang: str = "en") -> str:
     releases = [i for i in items if i.item_type == "release"]
     trending = [i for i in items if i.item_type == "trending"]
 
-    lines = [f"## GitHub Updates ({len(items)})\n"]
+    lines = [f"## {_l('github_updates', lang)} ({len(items)})\n"]
 
     if releases:
-        lines.append("### New Releases\n")
+        lines.append(f"### {_l('new_releases', lang)}\n")
         for i, item in enumerate(releases, 1):
-            badge = _score_badge(item.relevance_score)
+            badge = _score_badge(item.relevance_score, lang)
             cats = ", ".join(item.matched_categories) if item.matched_categories else ""
             tag_str = f" `{item.release_tag}`" if item.release_tag else ""
 
             lines.append(f"**{i}. [{item.repo_name}]({item.url})**{tag_str}")
-            lines.append(f"Relevance: {badge} (score: {item.relevance_score})"
-                          + (f" | Topics: {cats}" if cats else ""))
+            lines.append(
+                f"{_l('relevance', lang)}: {badge} "
+                f"({_l('score', lang)}: {item.relevance_score})"
+                + (f" | {_l('topics', lang)}: {cats}" if cats else "")
+            )
             summary_text = _get_summary(item, lang, "description")
             if summary_text:
                 lines.append(f"\n> {summary_text}\n")
@@ -123,19 +196,22 @@ def format_github_section(items: list, lang: str = "en") -> str:
                 lines.append("")
 
     if trending:
-        lines.append("### Trending Repos\n")
+        lines.append(f"### {_l('trending_repos', lang)}\n")
         for i, item in enumerate(trending, 1):
-            badge = _score_badge(item.relevance_score)
+            badge = _score_badge(item.relevance_score, lang)
             cats = ", ".join(item.matched_categories) if item.matched_categories else ""
-            stars_info = f"Stars: {item.stars:,}"
+            stars_info = f"{_l('stars', lang)}: {item.stars:,}"
             if item.stars_today:
-                stars_info += f" (+{item.stars_today:,} today)"
+                stars_info += f" (+{item.stars_today:,} {_l('today', lang)})"
 
             lines.append(f"**{i}. [{item.repo_name}]({item.url})** | {stars_info}")
-            lines.append(f"Relevance: {badge} (score: {item.relevance_score})"
-                          + (f" | Topics: {cats}" if cats else ""))
+            lines.append(
+                f"{_l('relevance', lang)}: {badge} "
+                f"({_l('score', lang)}: {item.relevance_score})"
+                + (f" | {_l('topics', lang)}: {cats}" if cats else "")
+            )
             if item.language:
-                lines.append(f"Language: {item.language}")
+                lines.append(f"{_l('language', lang)}: {item.language}")
             summary_text = _get_summary(item, lang, "description")
             if summary_text:
                 lines.append(f"\n> {summary_text}\n")
@@ -150,7 +226,7 @@ def format_pwc_section(papers: list, lang: str = "en") -> str:
 
     Args:
         papers: List of PwcPaper objects (already filtered and scored).
-        lang: Language for summaries - "en" or "cn".
+        lang: Language for summaries and labels - "en" or "cn".
 
     Returns:
         Markdown string for the PWC section.
@@ -158,21 +234,24 @@ def format_pwc_section(papers: list, lang: str = "en") -> str:
     if not papers:
         return ""
 
-    lines = [f"## Papers with Code ({len(papers)})\n"]
+    lines = [f"## {_l('papers_with_code', lang)} ({len(papers)})\n"]
 
     for i, paper in enumerate(papers, 1):
-        badge = _score_badge(paper.relevance_score)
+        badge = _score_badge(paper.relevance_score, lang)
         cats = ", ".join(paper.matched_categories) if paper.matched_categories else ""
 
         lines.append(f"### {i}. [{paper.title}]({paper.url_abs})")
-        lines.append(f"**Relevance: {badge}** (score: {paper.relevance_score})"
-                      + (f" | **Topics**: {cats}" if cats else ""))
+        lines.append(
+            f"**{_l('relevance', lang)}: {badge}** "
+            f"({_l('score', lang)}: {paper.relevance_score})"
+            + (f" | **{_l('topics', lang)}**: {cats}" if cats else "")
+        )
 
         if paper.authors:
             authors = ", ".join(paper.authors[:3])
             if len(paper.authors) > 3:
                 authors += " et al."
-            lines.append(f"**Authors**: {authors}")
+            lines.append(f"**{_l('authors', lang)}**: {authors}")
 
         summary_text = _get_summary(paper, lang, "abstract")
         if summary_text:
@@ -206,7 +285,7 @@ def format_daily_issue(
         github_items: Filtered GitHub items.
         pwc_papers: Filtered PWC papers.
         date_str: Date string for the title (default: today).
-        lang: Language for summaries - "en" or "cn".
+        lang: Language for summaries and labels - "en" or "cn".
 
     Returns:
         Tuple of (issue_title, issue_body).
@@ -218,13 +297,13 @@ def format_daily_issue(
 
     title = f"LLM Daily Update - {date_str} ({total} items)"
 
-    body_parts = [f"# LLM Research & Tech Daily Update - {date_str}\n"]
+    body_parts = [f"# {_l('daily_title', lang)} - {date_str}\n"]
 
     # Summary line (GitHub first to match section order)
     body_parts.append(
-        f"**{len(github_items)}** GitHub updates | "
-        f"**{len(arxiv_papers)}** arXiv papers | "
-        f"**{len(pwc_papers)}** Papers with Code\n"
+        f"**{len(github_items)}** {_l('summary_github', lang)} | "
+        f"**{len(arxiv_papers)}** {_l('summary_arxiv', lang)} | "
+        f"**{len(pwc_papers)}** {_l('summary_pwc', lang)}\n"
     )
     body_parts.append("---\n")
 
@@ -245,14 +324,10 @@ def format_daily_issue(
         body_parts.append("---\n")
 
     if total == 0:
-        body_parts.append("*No new items matching the configured keywords were found today.*\n")
+        body_parts.append(f"*{_l('no_items', lang)}*\n")
 
     # Weekly summary trigger hint
-    body_parts.append(
-        "\n---\n"
-        "**Generate Weekly Summary**: Comment `/weekly-summary` on this issue "
-        "to trigger a weekly digest of the most important updates.\n"
-    )
+    body_parts.append(f"\n---\n{_l('weekly_hint', lang)}\n")
 
     body = "\n".join(body_parts)
     return title, body

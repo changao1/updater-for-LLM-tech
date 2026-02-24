@@ -32,3 +32,27 @@ Instead of showing a truncated 300-char abstract/description, each item now gets
 - The GitHub Issue uses EN summaries (same as the EN email).
 - If summarization fails (API error, no key, etc.), the formatter silently falls back to truncated abstracts — the pipeline is never blocked.
 - Weekly summary flow (`weekly.py`) is unaffected — it still uses the full-translation approach via `Translator`.
+
+## 2026-02-24 — Localise CN email headings and labels
+
+### Changes
+
+The CN email previously kept all structural text (section headings, metadata labels, score badges) in English — only the blockquote summaries were in Chinese. This made the CN email feel inconsistent.
+
+Added a `_LABELS` localisation dictionary to `src/formatters/issue_formatter.py` that maps every UI string to both English and Chinese. When `lang="cn"`, the formatter now produces fully localised output:
+
+- Section headings: "GitHub 更新", "arXiv 论文", "热门仓库", "新发布"
+- Metadata labels: "相关性:", "得分:", "主题:", "作者:", "分类:", "语言:"
+- Score badges: "高", "中等", "低"
+- Page title: "LLM 研究与技术日报"
+- Summary line, no-items message, weekly trigger hint — all in Chinese
+- Stars count and "今日" for trending repos
+
+Technical terms (paper titles, repo names, URLs, author names, arXiv category codes) remain untranslated.
+
+**Files modified:**
+
+| File | What changed |
+|---|---|
+| `src/formatters/issue_formatter.py` | Added `_LABELS` dict with EN/CN maps, `_l()` lookup helper. Updated `_score_badge()` to accept `lang`. All section formatters and `format_daily_issue()` now use `_l()` for every user-facing string. |
+| `journal.md` | Added this entry. |
