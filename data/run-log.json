@@ -123,5 +123,24 @@
       "cn": true
     },
     "errors": []
+  },
+  {
+    "date": "2026-02-24T17:47:36.584777+00:00",
+    "type": "weekly",
+    "collected": {
+      "aggregated_items": 44
+    },
+    "after_dedup": {
+      "unique_items": 44
+    },
+    "after_filter": {
+      "top_items": 20
+    },
+    "issue_url": "https://github.com/changao1/updater-for-LLM-tech/issues/7",
+    "email": {
+      "en": true,
+      "cn": true
+    },
+    "errors": []
   }
 ]
