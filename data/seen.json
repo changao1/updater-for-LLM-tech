@@ -4225,6 +4225,78 @@
     {
       "id": "github:trending:rlabbe/Kalman-and-Bayesian-Filters-in-Python",
       "seen_at": "2026-02-27T08:34:46.922166+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8179",
+      "seen_at": "2026-02-28T08:21:28.000209+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8178",
+      "seen_at": "2026-02-28T08:21:28.000242+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8177",
+      "seen_at": "2026-02-28T08:21:28.000267+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8175",
+      "seen_at": "2026-02-28T08:21:28.000291+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8173",
+      "seen_at": "2026-02-28T08:21:28.000315+00:00"
+    },
+    {
+      "id": "github:release:crewAIInc/crewAI:1.10.1a1",
+      "seen_at": "2026-02-28T08:21:28.000369+00:00"
+    },
+    {
+      "id": "github:release:langchain-ai/langgraph:1.0.10",
+      "seen_at": "2026-02-28T08:21:28.000402+00:00"
+    },
+    {
+      "id": "github:release:langchain-ai/langgraph:checkpoint==4.0.1",
+      "seen_at": "2026-02-28T08:21:28.000427+00:00"
+    },
+    {
+      "id": "github:trending:hiyouga/LlamaFactory",
+      "seen_at": "2026-02-28T08:21:28.000509+00:00"
+    },
+    {
+      "id": "github:trending:bytedance/trae-agent",
+      "seen_at": "2026-02-28T08:21:28.000532+00:00"
+    },
+    {
+      "id": "github:trending:modelscope/ms-swift",
+      "seen_at": "2026-02-28T08:21:28.000561+00:00"
+    },
+    {
+      "id": "github:trending:4thfever/cultivation-world-simulator",
+      "seen_at": "2026-02-28T08:21:28.000585+00:00"
+    },
+    {
+      "id": "github:trending:agentscope-ai/agentscope",
+      "seen_at": "2026-02-28T08:21:28.000612+00:00"
+    },
+    {
+      "id": "github:trending:QwenLM/Qwen-Agent",
+      "seen_at": "2026-02-28T08:21:28.000640+00:00"
+    },
+    {
+      "id": "github:trending:wilsonfreitas/awesome-quant",
+      "seen_at": "2026-02-28T08:21:28.000755+00:00"
+    },
+    {
+      "id": "github:trending:facebookresearch/sam2",
+      "seen_at": "2026-02-28T08:21:28.000780+00:00"
+    },
+    {
+      "id": "github:trending:Marktechpost/AI-Tutorial-Codes-Included",
+      "seen_at": "2026-02-28T08:21:28.000826+00:00"
+    },
+    {
+      "id": "github:trending:openai/CLIP",
+      "seen_at": "2026-02-28T08:21:28.000859+00:00"
     }
   ],
   "pwc": []
