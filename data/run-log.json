@@ -242,5 +242,30 @@
       "cn": true
     },
     "errors": []
+  },
+  {
+    "date": "2026-03-01T08:23:47.449034+00:00",
+    "type": "daily",
+    "collected": {
+      "arxiv": 170,
+      "github": 41,
+      "pwc": 0
+    },
+    "after_dedup": {
+      "arxiv": 0,
+      "github": 22,
+      "pwc": 0
+    },
+    "after_filter": {
+      "arxiv": 0,
+      "github": 5,
+      "pwc": 0
+    },
+    "issue_url": "https://github.com/changao1/updater-for-LLM-tech/issues/12",
+    "email": {
+      "en": true,
+      "cn": true
+    },
+    "errors": []
   }
 ]

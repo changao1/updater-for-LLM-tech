@@ -4297,6 +4297,94 @@
     {
       "id": "github:trending:openai/CLIP",
       "seen_at": "2026-02-28T08:21:28.000859+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8183",
+      "seen_at": "2026-03-01T08:23:26.059656+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8182",
+      "seen_at": "2026-03-01T08:23:26.059693+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8181",
+      "seen_at": "2026-03-01T08:23:26.059720+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8180",
+      "seen_at": "2026-03-01T08:23:26.059746+00:00"
+    },
+    {
+      "id": "github:trending:ruvnet/wifi-densepose",
+      "seen_at": "2026-03-01T08:23:26.059818+00:00"
+    },
+    {
+      "id": "github:trending:Shubhamsaboo/awesome-llm-apps",
+      "seen_at": "2026-03-01T08:23:26.059859+00:00"
+    },
+    {
+      "id": "github:trending:NousResearch/hermes-agent",
+      "seen_at": "2026-03-01T08:23:26.059885+00:00"
+    },
+    {
+      "id": "github:trending:datagouv/datagouv-mcp",
+      "seen_at": "2026-03-01T08:23:26.059912+00:00"
+    },
+    {
+      "id": "github:trending:X-PLUG/MobileAgent",
+      "seen_at": "2026-03-01T08:23:26.059937+00:00"
+    },
+    {
+      "id": "github:trending:ginobefun/agentic-design-patterns-cn",
+      "seen_at": "2026-03-01T08:23:26.059983+00:00"
+    },
+    {
+      "id": "github:trending:derv82/wifite2",
+      "seen_at": "2026-03-01T08:23:26.060015+00:00"
+    },
+    {
+      "id": "github:trending:modelscope/FunASR",
+      "seen_at": "2026-03-01T08:23:26.060040+00:00"
+    },
+    {
+      "id": "github:trending:521xueweihan/HelloGitHub",
+      "seen_at": "2026-03-01T08:23:26.060076+00:00"
+    },
+    {
+      "id": "github:trending:leggedrobotics/rsl_rl",
+      "seen_at": "2026-03-01T08:23:26.060101+00:00"
+    },
+    {
+      "id": "github:trending:anthropics/prompt-eng-interactive-tutorial",
+      "seen_at": "2026-03-01T08:23:26.060132+00:00"
+    },
+    {
+      "id": "github:trending:ageron/handson-ml3",
+      "seen_at": "2026-03-01T08:23:26.060158+00:00"
+    },
+    {
+      "id": "github:trending:warproxxx/poly_data",
+      "seen_at": "2026-03-01T08:23:26.060194+00:00"
+    },
+    {
+      "id": "github:trending:lit26/finvizfinance",
+      "seen_at": "2026-03-01T08:23:26.060230+00:00"
+    },
+    {
+      "id": "github:trending:vllm-project/recipes",
+      "seen_at": "2026-03-01T08:23:26.060267+00:00"
+    },
+    {
+      "id": "github:trending:datawhalechina/llm-universe",
+      "seen_at": "2026-03-01T08:23:26.060294+00:00"
+    },
+    {
+      "id": "github:trending:advimman/lama",
+      "seen_at": "2026-03-01T08:23:26.060320+00:00"
+    },
+    {
+      "id": "github:trending:microsoft/mcp-for-beginners",
+      "seen_at": "2026-03-01T08:23:26.060376+00:00"
     }
   ],
   "pwc": []
