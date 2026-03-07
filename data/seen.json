@@ -8453,6 +8453,90 @@
     {
       "id": "github:trending:ArcInstitute/evo2",
       "seen_at": "2026-03-06T08:30:28.866716+00:00"
+    },
+    {
+      "id": "github:release:vllm-project/vllm:v0.17.0",
+      "seen_at": "2026-03-07T08:22:51.617403+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8224",
+      "seen_at": "2026-03-07T08:22:51.617457+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8223",
+      "seen_at": "2026-03-07T08:22:51.617497+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8222",
+      "seen_at": "2026-03-07T08:22:51.617536+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8221",
+      "seen_at": "2026-03-07T08:22:51.617576+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8220",
+      "seen_at": "2026-03-07T08:22:51.617616+00:00"
+    },
+    {
+      "id": "github:release:NVIDIA/TensorRT-LLM:v1.3.0rc5.post1",
+      "seen_at": "2026-03-07T08:22:51.617655+00:00"
+    },
+    {
+      "id": "github:release:langchain-ai/langchain:langchain==0.3.28",
+      "seen_at": "2026-03-07T08:22:51.617695+00:00"
+    },
+    {
+      "id": "github:release:langchain-ai/langchain:langchain-classic==1.0.2",
+      "seen_at": "2026-03-07T08:22:51.617734+00:00"
+    },
+    {
+      "id": "github:release:axolotl-ai-cloud/axolotl:v0.15.0",
+      "seen_at": "2026-03-07T08:22:51.617773+00:00"
+    },
+    {
+      "id": "github:trending:lingfengQAQ/webnovel-writer",
+      "seen_at": "2026-03-07T08:22:51.617855+00:00"
+    },
+    {
+      "id": "github:trending:openai/skills",
+      "seen_at": "2026-03-07T08:22:51.617894+00:00"
+    },
+    {
+      "id": "github:trending:p-e-w/heretic",
+      "seen_at": "2026-03-07T08:22:51.617954+00:00"
+    },
+    {
+      "id": "github:trending:apache/airflow",
+      "seen_at": "2026-03-07T08:22:51.617993+00:00"
+    },
+    {
+      "id": "github:trending:github/awesome-copilot",
+      "seen_at": "2026-03-07T08:22:51.618047+00:00"
+    },
+    {
+      "id": "github:trending:Liquid4All/cookbook",
+      "seen_at": "2026-03-07T08:22:51.618094+00:00"
+    },
+    {
+      "id": "github:trending:DataExpert-io/data-engineer-handbook",
+      "seen_at": "2026-03-07T08:22:51.618134+00:00"
+    },
+    {
+      "id": "github:trending:NVIDIA/accelerated-computing-hub",
+      "seen_at": "2026-03-07T08:22:51.618211+00:00"
+    },
+    {
+      "id": "github:trending:patchy631/ai-engineering-hub",
+      "seen_at": "2026-03-07T08:22:51.618269+00:00"
+    },
+    {
+      "id": "github:trending:neo4j-labs/llm-graph-builder",
+      "seen_at": "2026-03-07T08:22:51.618344+00:00"
+    },
+    {
+      "id": "github:trending:pyannote/pyannote-audio",
+      "seen_at": "2026-03-07T08:22:51.618384+00:00"
     }
   ],
   "pwc": []
