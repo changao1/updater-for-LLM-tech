@@ -8537,6 +8537,70 @@
     {
       "id": "github:trending:pyannote/pyannote-audio",
       "seen_at": "2026-03-07T08:22:51.618384+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8234",
+      "seen_at": "2026-03-08T08:24:02.860940+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8233",
+      "seen_at": "2026-03-08T08:24:02.860994+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8232",
+      "seen_at": "2026-03-08T08:24:02.861037+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8231",
+      "seen_at": "2026-03-08T08:24:02.861079+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8230",
+      "seen_at": "2026-03-08T08:24:02.861120+00:00"
+    },
+    {
+      "id": "github:trending:666ghj/MiroFish",
+      "seen_at": "2026-03-08T08:24:02.861235+00:00"
+    },
+    {
+      "id": "github:trending:pgmpy/pgmpy",
+      "seen_at": "2026-03-08T08:24:02.861308+00:00"
+    },
+    {
+      "id": "github:trending:Dao-AILab/flash-attention",
+      "seen_at": "2026-03-08T08:24:02.861355+00:00"
+    },
+    {
+      "id": "github:trending:fastino-ai/GLiNER2",
+      "seen_at": "2026-03-08T08:24:02.861444+00:00"
+    },
+    {
+      "id": "github:trending:teng-lin/notebooklm-py",
+      "seen_at": "2026-03-08T08:24:02.861484+00:00"
+    },
+    {
+      "id": "github:trending:donnemartin/system-design-primer",
+      "seen_at": "2026-03-08T08:24:02.861524+00:00"
+    },
+    {
+      "id": "github:trending:InternRobotics/InternNav",
+      "seen_at": "2026-03-08T08:24:02.861669+00:00"
+    },
+    {
+      "id": "github:trending:GokuMohandas/Made-With-ML",
+      "seen_at": "2026-03-08T08:24:02.861722+00:00"
+    },
+    {
+      "id": "github:trending:AkashSingh3031/The-Complete-FAANG-Preparation",
+      "seen_at": "2026-03-08T08:24:02.861779+00:00"
+    },
+    {
+      "id": "github:trending:alphacep/vosk-api",
+      "seen_at": "2026-03-08T08:24:02.861837+00:00"
+    },
+    {
+      "id": "github:trending:Azure-Samples/AI-Gateway",
+      "seen_at": "2026-03-08T08:24:02.861882+00:00"
     }
   ],
   "pwc": []
