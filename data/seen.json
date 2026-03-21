@@ -16649,6 +16649,78 @@
     {
       "id": "github:trending:spmallick/learnopencv",
       "seen_at": "2026-03-20T08:34:03.921694+00:00"
+    },
+    {
+      "id": "github:release:huggingface/trl:v1.0.0rc1",
+      "seen_at": "2026-03-21T08:24:51.356381+00:00"
+    },
+    {
+      "id": "github:release:vllm-project/vllm:v0.18.0",
+      "seen_at": "2026-03-21T08:24:51.356540+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8461",
+      "seen_at": "2026-03-21T08:24:51.356630+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8460",
+      "seen_at": "2026-03-21T08:24:51.356707+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8459",
+      "seen_at": "2026-03-21T08:24:51.356779+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8457",
+      "seen_at": "2026-03-21T08:24:51.356850+00:00"
+    },
+    {
+      "id": "github:release:langchain-ai/langgraph:cli==0.4.19",
+      "seen_at": "2026-03-21T08:24:51.356989+00:00"
+    },
+    {
+      "id": "github:release:microsoft/semantic-kernel:vectordata-dotnet-10.1.0",
+      "seen_at": "2026-03-21T08:24:51.357059+00:00"
+    },
+    {
+      "id": "github:release:microsoft/semantic-kernel:dotnet-1.74.0",
+      "seen_at": "2026-03-21T08:24:51.357128+00:00"
+    },
+    {
+      "id": "github:release:unslothai/unsloth:b8457",
+      "seen_at": "2026-03-21T08:24:51.357197+00:00"
+    },
+    {
+      "id": "github:trending:astral-sh/ty",
+      "seen_at": "2026-03-21T08:24:51.357356+00:00"
+    },
+    {
+      "id": "github:trending:datalab-to/chandra",
+      "seen_at": "2026-03-21T08:24:51.357461+00:00"
+    },
+    {
+      "id": "github:trending:vllm-project/vllm-omni",
+      "seen_at": "2026-03-21T08:24:51.357576+00:00"
+    },
+    {
+      "id": "github:trending:google/adk-python",
+      "seen_at": "2026-03-21T08:24:51.357647+00:00"
+    },
+    {
+      "id": "github:trending:swisskyrepo/PayloadsAllTheThings",
+      "seen_at": "2026-03-21T08:24:51.357716+00:00"
+    },
+    {
+      "id": "github:trending:BiFangKNT/mtga",
+      "seen_at": "2026-03-21T08:24:51.357785+00:00"
+    },
+    {
+      "id": "github:trending:NVIDIA/warp",
+      "seen_at": "2026-03-21T08:24:51.357861+00:00"
+    },
+    {
+      "id": "github:trending:IDEA-Research/Rex-Omni",
+      "seen_at": "2026-03-21T08:24:51.358148+00:00"
     }
   ],
   "pwc": []
