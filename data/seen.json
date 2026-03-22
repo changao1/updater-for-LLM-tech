@@ -16721,6 +16721,62 @@
     {
       "id": "github:trending:IDEA-Research/Rex-Omni",
       "seen_at": "2026-03-21T08:24:51.358148+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8468",
+      "seen_at": "2026-03-22T08:27:17.928410+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8467",
+      "seen_at": "2026-03-22T08:27:17.928490+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8466",
+      "seen_at": "2026-03-22T08:27:17.928559+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8464",
+      "seen_at": "2026-03-22T08:27:17.928627+00:00"
+    },
+    {
+      "id": "github:trending:opengaming/osgameclones",
+      "seen_at": "2026-03-22T08:27:17.928943+00:00"
+    },
+    {
+      "id": "github:trending:meta-pytorch/OpenEnv",
+      "seen_at": "2026-03-22T08:27:17.929016+00:00"
+    },
+    {
+      "id": "github:trending:simular-ai/Agent-S",
+      "seen_at": "2026-03-22T08:27:17.929133+00:00"
+    },
+    {
+      "id": "github:trending:skypilot-org/skypilot",
+      "seen_at": "2026-03-22T08:27:17.929223+00:00"
+    },
+    {
+      "id": "github:trending:facebookresearch/vjepa2",
+      "seen_at": "2026-03-22T08:27:17.929292+00:00"
+    },
+    {
+      "id": "github:trending:unslothai/unsloth-studio",
+      "seen_at": "2026-03-22T08:27:17.929429+00:00"
+    },
+    {
+      "id": "github:trending:datawhalechina/easy-rl",
+      "seen_at": "2026-03-22T08:27:17.929577+00:00"
+    },
+    {
+      "id": "github:trending:openvinotoolkit/openvino_notebooks",
+      "seen_at": "2026-03-22T08:27:17.929694+00:00"
+    },
+    {
+      "id": "github:trending:aws-samples/amazon-bedrock-samples",
+      "seen_at": "2026-03-22T08:27:17.929760+00:00"
+    },
+    {
+      "id": "github:trending:datawhalechina/handy-ollama",
+      "seen_at": "2026-03-22T08:27:17.929839+00:00"
     }
   ],
   "pwc": []
