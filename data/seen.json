@@ -18329,6 +18329,86 @@
     {
       "id": "github:trending:jakevdp/PythonDataScienceHandbook",
       "seen_at": "2026-03-27T08:42:59.224841+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8563",
+      "seen_at": "2026-03-28T08:31:34.859634+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8562",
+      "seen_at": "2026-03-28T08:31:34.859710+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8560",
+      "seen_at": "2026-03-28T08:31:34.859778+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8559",
+      "seen_at": "2026-03-28T08:31:34.859845+00:00"
+    },
+    {
+      "id": "github:release:ggerganov/llama.cpp:b8558",
+      "seen_at": "2026-03-28T08:31:34.859915+00:00"
+    },
+    {
+      "id": "github:release:ollama/ollama:v0.19.0-rc1",
+      "seen_at": "2026-03-28T08:31:34.859997+00:00"
+    },
+    {
+      "id": "github:release:langchain-ai/langchain:langchain-core==1.2.23",
+      "seen_at": "2026-03-28T08:31:34.860097+00:00"
+    },
+    {
+      "id": "github:release:unslothai/unsloth:v0.1.25-beta",
+      "seen_at": "2026-03-28T08:31:34.860289+00:00"
+    },
+    {
+      "id": "github:trending:hacksider/Deep-Live-Cam",
+      "seen_at": "2026-03-28T08:31:34.860384+00:00"
+    },
+    {
+      "id": "github:trending:SakanaAI/AI-Scientist-v2",
+      "seen_at": "2026-03-28T08:31:34.860451+00:00"
+    },
+    {
+      "id": "github:trending:microsoft/VibeVoice",
+      "seen_at": "2026-03-28T08:31:34.860517+00:00"
+    },
+    {
+      "id": "github:trending:onyx-dot-app/onyx",
+      "seen_at": "2026-03-28T08:31:34.860607+00:00"
+    },
+    {
+      "id": "github:trending:dreammis/social-auto-upload",
+      "seen_at": "2026-03-28T08:31:34.860730+00:00"
+    },
+    {
+      "id": "github:trending:databricks-solutions/ai-dev-kit",
+      "seen_at": "2026-03-28T08:31:34.860805+00:00"
+    },
+    {
+      "id": "github:trending:trailofbits/skills",
+      "seen_at": "2026-03-28T08:31:34.860870+00:00"
+    },
+    {
+      "id": "github:trending:ruc-datalab/DeepAnalyze",
+      "seen_at": "2026-03-28T08:31:34.860936+00:00"
+    },
+    {
+      "id": "github:trending:SolaceLabs/solace-agent-mesh",
+      "seen_at": "2026-03-28T08:31:34.861014+00:00"
+    },
+    {
+      "id": "github:trending:HandsOnLLM/Hands-On-Large-Language-Models",
+      "seen_at": "2026-03-28T08:31:34.861138+00:00"
+    },
+    {
+      "id": "github:trending:google-research/google-research",
+      "seen_at": "2026-03-28T08:31:34.861204+00:00"
+    },
+    {
+      "id": "github:trending:langchain-ai/langchain-academy",
+      "seen_at": "2026-03-28T08:31:34.861279+00:00"
     }
   ],
   "pwc": []
