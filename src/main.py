@@ -24,6 +24,7 @@ from src.notifiers.github_issue import create_issue
 from src.state.dedup import DedupStore
 from src.state.run_logger import append_run_record
 from src.modules.email_sender.bilingual import BilingualSender
+from src.modules.star_history import StarCache, enrich_github_items
 from src.modules.summarizer import Summarizer
 
 # Configure logging
@@ -143,6 +144,27 @@ def main():
         f"{filter_stats['pwc']} PWC "
         f"(total: {total})"
     )
+
+    # ── Star-history enrichment ──────────────────────────────────────────
+    sh_settings = settings.get("star_history", {})
+    if sh_settings.get("enabled", False) and github_filtered:
+        logger.info("=== Enriching with star-history data ===")
+        try:
+            star_cache = StarCache(
+                retention_days=sh_settings.get("cache_retention_days", 30)
+            )
+            github_filtered = enrich_github_items(
+                github_filtered,
+                star_cache,
+                token=os.environ.get("GITHUB_TOKEN", ""),
+                top_n=sh_settings.get("top_n", 5),
+                growth_weight=sh_settings.get("growth_weight", 0.3),
+                window_days=sh_settings.get("window_days", 7),
+            )
+            star_cache.save()
+        except Exception as e:
+            logger.error(f"Star-history enrichment failed: {e}")
+            run_errors.append(f"Star-history enrichment failed: {e}")
 
     # ── Summarize ─────────────────────────────────────────────────────────
     logger.info("=== Generating bilingual summaries ===")

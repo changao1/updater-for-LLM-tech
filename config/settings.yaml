@@ -54,3 +54,17 @@ weekly_summary:
 dedup:
   # Number of days to retain seen records
   retention_days: 30
+
+# Star-history integration: embed star-growth curves and boost ranking for fast-growing repos
+star_history:
+  enabled: true
+  # How many top GitHub items (by score) get a curve image embedded
+  top_n: 5
+  # Size of the dedicated "Hot Repos" section (ranked by 7-day star growth)
+  hot_repos_count: 3
+  # How strongly star growth boosts relevance_score (score += growth_weight * growth_rate)
+  growth_weight: 0.3
+  # Window for growth-rate computation
+  window_days: 7
+  # How long to retain (date, stars) samples in data/star_history_cache.json
+  cache_retention_days: 30

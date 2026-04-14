@@ -13,47 +13,8 @@ arxiv:
   lookback_days: 3
 
 github:
-  # Organizations/users to track for new releases
-  tracked_repos:
-    # Major AI Labs
-    - huggingface/transformers
-    - huggingface/text-generation-inference
-    - huggingface/trl
-    - huggingface/peft
-    - huggingface/accelerate
-    - meta-llama/llama
-    - meta-llama/llama-models
-    - meta-llama/PurpleLlama
-    - openai/openai-python
-    - openai/tiktoken
-    - google/gemma_pytorch
-    - google-deepmind/gemma
-    - mistralai/mistral-inference
-    - mistralai/mistral-common
-    - QwenLM/Qwen2.5
-    - deepseek-ai/DeepSeek-V3
-    - deepseek-ai/DeepSeek-R1
-    # Inference & Serving
-    - vllm-project/vllm
-    - ggerganov/llama.cpp
-    - NVIDIA/TensorRT-LLM
-    - ollama/ollama
-    # Frameworks & Tools
-    - langchain-ai/langchain
-    - run-llama/llama_index
-    - anthropics/anthropic-sdk-python
-    - lm-sys/FastChat
-    - microsoft/autogen
-    - crewAIInc/crewAI
-    - stanfordnlp/dspy
-    # Agent Frameworks
-    - langchain-ai/langgraph
-    - microsoft/semantic-kernel
-    - modelcontextprotocol/servers
-    # Training
-    - hiyouga/LLaMA-Factory
-    - unslothai/unsloth
-    - axolotl-ai-cloud/axolotl
+  # Repos are discovered automatically via trending + keyword filter + star-growth ranking.
+  # No hand-maintained tracked_repos list — if a repo matters, it'll surface through those signals.
 
   # GitHub Trending settings
   trending:

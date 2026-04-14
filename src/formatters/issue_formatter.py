@@ -32,6 +32,8 @@ _LABELS = {
         "summary_github": "GitHub updates",
         "summary_arxiv": "arXiv papers",
         "summary_pwc": "Papers with Code",
+        "hot_repos": "🔥 Hot Repos (by star growth)",
+        "growth_7d": "7d growth",
         "no_items": "No new items matching the configured keywords were found today.",
         "weekly_hint": (
             "**Generate Weekly Summary**: Comment `/weekly-summary` on this issue "
@@ -59,6 +61,8 @@ _LABELS = {
         "summary_github": "GitHub 更新",
         "summary_arxiv": "arXiv 论文",
         "summary_pwc": "Papers with Code",
+        "hot_repos": "🔥 热门仓库 (按 star 增速)",
+        "growth_7d": "7日增长",
         "no_items": "今日没有匹配到符合关键词的新内容。",
         "weekly_hint": (
             "**生成周报**: 在此 Issue 下评论 `/weekly-summary` "
@@ -176,6 +180,26 @@ def format_github_section(items: list, lang: str = "en") -> str:
 
     lines = [f"## {_l('github_updates', lang)} ({len(items)})\n"]
 
+    # Hot Repos section: top items by 7-day star growth rate
+    hot = sorted(
+        [i for i in items if i.star_growth_7d is not None],
+        key=lambda x: x.star_growth_7d or 0,
+        reverse=True,
+    )[:3]
+    if hot:
+        lines.append(f"### {_l('hot_repos', lang)}\n")
+        for i, item in enumerate(hot, 1):
+            growth_pct = (item.star_growth_7d or 0) * 100
+            lines.append(
+                f"**{i}. [{item.repo_name}]({item.url})** — "
+                f"{_l('growth_7d', lang)}: +{growth_pct:.1f}% "
+                f"({_l('stars', lang)}: {item.stars:,})"
+            )
+            if item.star_history_url:
+                lines.append(f"\n![star-history]({item.star_history_url})\n")
+            else:
+                lines.append("")
+
     if releases:
         lines.append(f"### {_l('new_releases', lang)}\n")
         for i, item in enumerate(releases, 1):
@@ -194,7 +218,6 @@ def format_github_section(items: list, lang: str = "en") -> str:
                 lines.append(f"\n> {summary_text}\n")
             else:
                 lines.append("")
-
     if trending:
         lines.append(f"### {_l('trending_repos', lang)}\n")
         for i, item in enumerate(trending, 1):

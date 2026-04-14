@@ -1,5 +1,45 @@
 # Development Journal
 
+## 2026-04-14 — star-history integration + retire tracked_repos
+
+### Changes
+
+**1. Removed `tracked_repos` entirely**
+
+The hand-maintained list of "old favorite" repos in `config/sources.yaml` was deleted along with `collect_releases()` in `src/collectors/github_collector.py`. Rationale: keyword filter + trending + star-growth ranking can surface relevant repos automatically, and a stale manual list gave outdated projects unearned visibility. If a repo stops trending, that's itself the signal that daily updates aren't needed.
+
+**2. New module `src/modules/star_history.py`**
+
+- `get_svg_url()` builds `https://api.star-history.com/svg?repos=owner/repo&type=Date` for embedding inline growth curves in Issue/email Markdown.
+- `StarCache` persists `(date, stars)` samples to `data/star_history_cache.json` (mirrors the dedup.py pattern, 30-day retention).
+- `enrich_github_items()` picks the top-N GitHub items by relevance_score, calls GitHub API for current `stargazers_count`, records a sample, computes 7-day growth rate vs. oldest cached sample, boosts `relevance_score` by `growth_weight * growth_rate`, and attaches `star_history_url` + `star_growth_7d` fields.
+
+**3. Formatter — new 🔥 Hot Repos board**
+
+`format_github_section()` now emits a dedicated top-of-section listing the 3 repos with the steepest 7-day growth, each followed by the star-history SVG. Normal release/trending listings below don't re-embed the curve (avoids duplicate images in email).
+
+**4. Settings**
+
+New `star_history` block in `config/settings.yaml`: `enabled`, `top_n=5`, `hot_repos_count=3`, `growth_weight=0.3`, `window_days=7`, `cache_retention_days=30`.
+
+### Files modified/created
+
+| File | Change |
+|---|---|
+| `src/modules/star_history.py` | **new** — SVG URL builder, StarCache, growth rate, top-N enrichment |
+| `src/collectors/github_collector.py` | removed `collect_releases()` + tracked_repos path; added `star_history_url` and `star_growth_7d` fields on `GitHubItem` |
+| `src/main.py` | inserted enrichment step between filter and summarize |
+| `src/formatters/issue_formatter.py` | added 🔥 Hot Repos board at top of GitHub section with embedded curves |
+| `config/sources.yaml` | removed `tracked_repos` list |
+| `config/settings.yaml` | added `star_history` config block |
+| `CLAUDE.md` | updated architecture diagram, daily flow, and common-tasks section |
+
+### Design notes
+
+- star-history.com has no documented public JSON API. We use their SVG endpoint only for display, and compute the growth ranking signal from our own GitHub API calls + local cache. First run has no baseline → growth=None → no score boost → graceful degradation.
+- Only top-N (default 5) items incur GitHub API calls, well under the 5000/hr authenticated limit.
+- Gmail renders inline `<img>` from star-history SVG through its image proxy; Markdown `![...](...)` is already converted to HTML by `bilingual.py`.
+
 ## 2026-02-24 — Reorder email sections + bilingual AI summaries
 
 ### Changes

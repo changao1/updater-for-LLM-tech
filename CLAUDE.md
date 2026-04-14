@@ -10,7 +10,7 @@ Automated daily tracker for LLM research and tools. Runs via GitHub Actions, col
 src/
 ├── collectors/          # Data collection from external sources
 │   ├── arxiv_collector.py      # arXiv API (arxiv Python package)
-│   ├── github_collector.py     # GitHub REST API + Trending page scraping
+│   ├── github_collector.py     # GitHub Trending page scraping (no tracked repos)
 │   └── pwc_collector.py        # Papers with Code REST API
 ├── filters/
 │   └── keyword_filter.py       # Regex-based keyword matching with weighted scoring
@@ -23,6 +23,7 @@ src/
 │   └── run_logger.py           # Appends structured run records to data/run-log.json
 ├── modules/
 │   ├── summarizer.py            # Claude API bilingual summarization (EN+CN)
+│   ├── star_history.py          # star-history.com curve embed + GitHub-API growth ranking signal
 │   ├── email_sender/           # INDEPENDENT MODULE: Bilingual email
 │   │   ├── smtp_client.py      # Gmail SMTP wrapper
 │   │   ├── translator.py       # Claude API translation (EN→CN, used by weekly)
@@ -38,15 +39,16 @@ src/
 ## Key Data Flow
 
 ### Daily (`main.py`)
-1. Collect → arXiv, GitHub (releases + trending), Papers with Code
+1. Collect → arXiv, GitHub Trending, Papers with Code
 2. Dedup → filter out previously seen items (`data/seen.json`)
 3. Filter → keyword matching against `config/keywords.yaml`, score ≥ threshold
-4. Summarize → Claude API generates bilingual (EN+CN) 2-3 sentence key-point summaries for each item
-5. Format → structured Markdown (GitHub section first, then arXiv, then PwC). Two versions: EN body (for Issue + EN email), CN body (with Chinese summaries for CN email)
-6. Notify → create GitHub Issue (label: `daily-update`)
-7. Email → EN body to EMAIL_EN list, CN body (with Chinese summaries) to EMAIL_CN list (comma-separated for multiple recipients)
-8. Log → append run stats to `data/run-log.json` (collected/dedup/filter counts, issue URL, errors)
-9. Persist → update `data/seen.json` + `data/run-log.json`, auto-commit via GitHub Actions
+4. Star-history enrichment → top-N GitHub items get current stars (GitHub API), 7-day growth rate from `data/star_history_cache.json`, star-history SVG URL, and a score boost proportional to growth
+5. Summarize → Claude API generates bilingual (EN+CN) 2-3 sentence key-point summaries for each item
+6. Format → structured Markdown (GitHub section first with 🔥 Hot Repos board showing star-history curves, then arXiv, then PwC). Two versions: EN body (for Issue + EN email), CN body (with Chinese summaries for CN email)
+7. Notify → create GitHub Issue (label: `daily-update`)
+8. Email → EN body to EMAIL_EN list, CN body (with Chinese summaries) to EMAIL_CN list (comma-separated for multiple recipients)
+9. Log → append run stats to `data/run-log.json` (collected/dedup/filter counts, issue URL, errors)
+10. Persist → update `data/seen.json` + `data/star_history_cache.json` + `data/run-log.json`, auto-commit via GitHub Actions
 
 ### Weekly (`weekly.py`)
 1. Triggered by `/weekly-summary` comment on any issue, or manual workflow_dispatch
@@ -93,8 +95,9 @@ src/
 ### Adding a new keyword category
 Edit `config/keywords.yaml`. Add a new top-level key with `weight` and `terms`. No code changes needed.
 
-### Adding a new tracked GitHub repo
-Edit `config/sources.yaml` → `github.tracked_repos`. Append the `owner/repo` string.
+### Tracking specific GitHub repos
+
+Removed. Repos surface automatically via GitHub Trending + keyword filter + star-growth ranking (see `star_history.enabled` in `config/settings.yaml`). If a repo isn't trending and doesn't match keywords, it won't appear — which is the intended signal.
 
 ### Adding a new data source
 1. Create `src/collectors/new_collector.py` with a `collect(config) -> list[DataClass]` function
