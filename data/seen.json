@@ -17777,6 +17777,26 @@
     {
       "id": "github:trending:rasbt/LLMs-from-scratch",
       "seen_at": "2026-04-24T09:25:07.859913+00:00"
+    },
+    {
+      "id": "github:trending:openai/skills",
+      "seen_at": "2026-04-25T08:43:45.282545+00:00"
+    },
+    {
+      "id": "github:trending:google/adk-samples",
+      "seen_at": "2026-04-25T08:43:45.282612+00:00"
+    },
+    {
+      "id": "github:trending:mlflow/mlflow",
+      "seen_at": "2026-04-25T08:43:45.282686+00:00"
+    },
+    {
+      "id": "github:trending:Azure/Azure-Sentinel",
+      "seen_at": "2026-04-25T08:43:45.282810+00:00"
+    },
+    {
+      "id": "github:trending:ysymyth/ReAct",
+      "seen_at": "2026-04-25T08:43:45.283048+00:00"
     }
   ],
   "pwc": []
