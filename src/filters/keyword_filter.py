@@ -85,7 +85,7 @@ def filter_items(items: list, categories: list[KeywordCategory], min_score: floa
     plus 'relevance_score' and 'matched_categories' attributes to be set.
 
     Args:
-        items: List of dataclass items (ArxivPaper, GitHubItem, PwcPaper).
+        items: List of dataclass items (ArxivPaper, GitHubItem).
         categories: Keyword categories for scoring.
         min_score: Minimum score threshold to include.
 

@@ -1,5 +1,47 @@
 # Development Journal
 
+## 2026-05-17 — diagnose empty weekend digests; remove Papers with Code
+
+### Why
+
+User reported the tracker "hasn't worked the past few days." The workflow was actually running fine (issues #84–#90 created, emails sent, `errors: []`), but the run-log showed content collapsing on the weekend: 5/16 (Sat) arXiv `200→0→0`, 5/17 (Sun) `0→0→0`.
+
+**Root causes found:**
+
+1. **arXiv empty on weekends.** The collector uses `sortBy=submittedDate desc, max_results=200`, then drops papers older than `lookback_days=3`. On busy weekdays the newest 200 only span a few hours, so the 3-day lookback never actually reaches back 3 days. arXiv doesn't announce on weekends, so Sat/Sun the newest 200 are stale weekday papers already in `data/seen.json` → dedup zeroes them out. The "lookback_days=3 covers weekends" comment was a false assumption.
+2. **Papers with Code fully dead.** Live test: `Error fetching from Papers with Code: Expecting value: line 1 column 1 (char 0)` — non-JSON response. paperswithcode.com API was shut down by Meta in 2025. PwC has been 0 every single day, not just weekends.
+
+GitHub collector verified healthy (33 items live).
+
+### Changes
+
+**1. Daily workflow runs weekdays only**
+
+`.github/workflows/daily-update.yml` cron `0 8 * * *` → `0 8 * * 1-5`. No more empty Sat/Sun issues/emails — matches arXiv's actual publishing cadence.
+
+**2. arXiv query now uses an explicit submittedDate range**
+
+`arxiv_collector.py` previously queried `(cat:... OR ...)` with `sortBy=submittedDate desc` and a `max_results` cap, then post-filtered by `lookback_days`. arXiv's submittedDate sort is unreliable, so the result set was effectively "the newest ~200 papers as of query time" — a few-hours snapshot on busy weekdays, never reaching `lookback_days` back. Changed the query to `(cat:... OR ...) AND submittedDate:[<now-lookback> TO <now>]` (format `YYYYMMDDHHMM`, UTC) and raised the `max_results` cap 200 → 600. Result set is now deterministic: every paper in the window, newest-first, capped. Validated live: a 7-day lookback returned 600 papers spanning two distinct days (233 + 367) where the old code only ever saw one ~few-hour cluster. Trade-off documented: arXiv's submittedDate filter keys off the v1 submission date, so papers revised (not first-submitted) inside the window are not returned — acceptable for predictable new-paper coverage.
+
+**3. Papers with Code removed entirely**
+
+Deleted `src/collectors/pwc_collector.py`; removed the collect/dedup/filter/summarize/format wiring from `src/main.py`; dropped `format_pwc_section()` and the `pwc_papers` parameter from `format_daily_issue()` in `issue_formatter.py` (signature is now `(arxiv_papers, github_items, ...)`); removed PwC labels, the `papers_with_code` block in `config/sources.yaml`, the `pwc` default bucket in `dedup.py`, and the PwC section in `weekly_summary/formatter.py`. The weekly `aggregator.py` still recognises old `## Papers with Code` headers in historical issues but buckets them as `other` to avoid mis-attribution.
+
+### Files modified/deleted
+
+| File | Change |
+|---|---|
+| `.github/workflows/daily-update.yml` | cron → weekdays only (`1-5`) |
+| `src/collectors/pwc_collector.py` | **deleted** |
+| `src/main.py` | removed all PwC pipeline steps + import |
+| `src/formatters/issue_formatter.py` | removed `format_pwc_section`, PwC param/labels |
+| `config/sources.yaml` | removed `papers_with_code` block (replaced with NOTE) |
+| `src/state/dedup.py` | removed `pwc` default bucket |
+| `src/modules/weekly_summary/formatter.py` | removed PwC section + grouping |
+| `src/modules/weekly_summary/aggregator.py` | old PwC headers → `other` bucket |
+| `src/filters/keyword_filter.py`, `src/modules/summarizer.py`, `src/state/run_logger.py` | docstring/comment cleanup |
+| `CLAUDE.md` | updated architecture, data flow, known issues |
+
 ## 2026-04-14 — star-history integration + retire tracked_repos
 
 ### Changes

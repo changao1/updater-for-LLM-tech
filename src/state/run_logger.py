@@ -29,7 +29,7 @@ def append_run_record(
 
     Args:
         run_type: "daily" or "weekly".
-        collected: Raw item counts per source, e.g. {"arxiv": 45, "github": 12, "pwc": 30}.
+        collected: Raw item counts per source, e.g. {"arxiv": 45, "github": 12}.
         after_dedup: Item counts after deduplication.
         after_filter: Item counts after keyword filtering.
         issue_url: URL of the created GitHub Issue (if any).

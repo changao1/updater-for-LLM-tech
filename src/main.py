@@ -17,7 +17,7 @@ import yaml
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.collectors import arxiv_collector, github_collector, pwc_collector
+from src.collectors import arxiv_collector, github_collector
 from src.filters.keyword_filter import filter_items, load_keywords
 from src.formatters.issue_formatter import format_daily_issue
 from src.notifiers.github_issue import create_issue
@@ -94,54 +94,38 @@ def main():
         logger.error(f"GitHub collection failed: {e}")
         run_errors.append(f"GitHub collection failed: {e}")
 
-    # Papers with Code
-    logger.info("Collecting from Papers with Code...")
-    pwc_papers = []
-    try:
-        pwc_papers = pwc_collector.collect(sources.get("papers_with_code", {}))
-    except Exception as e:
-        logger.error(f"Papers with Code collection failed: {e}")
-        run_errors.append(f"Papers with Code collection failed: {e}")
-
     collected_stats = {
         "arxiv": len(arxiv_papers),
         "github": len(github_items),
-        "pwc": len(pwc_papers),
     }
     logger.info(
         f"Collected: {collected_stats['arxiv']} arXiv, "
-        f"{collected_stats['github']} GitHub, "
-        f"{collected_stats['pwc']} PWC"
+        f"{collected_stats['github']} GitHub"
     )
 
     # ── Dedup ────────────────────────────────────────────────────────────
     logger.info("=== Deduplicating ===")
     arxiv_papers = dedup.filter_unseen(arxiv_papers)
     github_items = dedup.filter_unseen(github_items)
-    pwc_papers = dedup.filter_unseen(pwc_papers)
 
     dedup_stats = {
         "arxiv": len(arxiv_papers),
         "github": len(github_items),
-        "pwc": len(pwc_papers),
     }
 
     # ── Filter ───────────────────────────────────────────────────────────
     logger.info("=== Filtering by keyword relevance ===")
     arxiv_filtered = filter_items(arxiv_papers, keywords, min_score)[:max_items]
     github_filtered = filter_items(github_items, keywords, min_score)[:max_items]
-    pwc_filtered = filter_items(pwc_papers, keywords, min_score)[:max_items]
 
     filter_stats = {
         "arxiv": len(arxiv_filtered),
         "github": len(github_filtered),
-        "pwc": len(pwc_filtered),
     }
     total = sum(filter_stats.values())
     logger.info(
         f"After filtering: {filter_stats['arxiv']} arXiv, "
-        f"{filter_stats['github']} GitHub, "
-        f"{filter_stats['pwc']} PWC "
+        f"{filter_stats['github']} GitHub "
         f"(total: {total})"
     )
 
@@ -169,7 +153,7 @@ def main():
     # ── Summarize ─────────────────────────────────────────────────────────
     logger.info("=== Generating bilingual summaries ===")
     try:
-        all_filtered = arxiv_filtered + github_filtered + pwc_filtered
+        all_filtered = arxiv_filtered + github_filtered
         summarizer = Summarizer()
         summarizer.summarize(all_filtered)
     except Exception as e:
@@ -179,11 +163,11 @@ def main():
     # ── Format ───────────────────────────────────────────────────────────
     logger.info("=== Formatting issue ===")
     issue_title, issue_body = format_daily_issue(
-        arxiv_filtered, github_filtered, pwc_filtered, lang="en"
+        arxiv_filtered, github_filtered, lang="en"
     )
     # Generate CN version with Chinese summaries for the CN email
     _, issue_body_cn = format_daily_issue(
-        arxiv_filtered, github_filtered, pwc_filtered, lang="cn"
+        arxiv_filtered, github_filtered, lang="cn"
     )
 
     # ── Create GitHub Issue ──────────────────────────────────────────────

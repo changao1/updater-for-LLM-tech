@@ -10,8 +10,8 @@ Automated daily tracker for LLM research and tools. Runs via GitHub Actions, col
 src/
 ├── collectors/          # Data collection from external sources
 │   ├── arxiv_collector.py      # arXiv API (arxiv Python package)
-│   ├── github_collector.py     # GitHub Trending page scraping (no tracked repos)
-│   └── pwc_collector.py        # Papers with Code REST API
+│   └── github_collector.py     # GitHub Trending page scraping (no tracked repos)
+│                               # (pwc_collector.py removed — paperswithcode API shut down)
 ├── filters/
 │   └── keyword_filter.py       # Regex-based keyword matching with weighted scoring
 ├── formatters/
@@ -39,7 +39,7 @@ src/
 ## Key Data Flow
 
 ### Daily (`main.py`)
-1. Collect → arXiv, GitHub Trending, Papers with Code
+1. Collect → arXiv, GitHub Trending
 2. Dedup → filter out previously seen items (`data/seen.json`)
 3. Filter → keyword matching against `config/keywords.yaml`, score ≥ threshold
 4. Star-history enrichment → top-N GitHub items get current stars (GitHub API), 7-day growth rate from `data/star_history_cache.json`, star-history SVG URL, and a score boost proportional to growth
@@ -86,7 +86,7 @@ src/
 
 - Python 3.11+ target (GitHub Actions). Use `from __future__ import annotations` for backward compat in files with `X | Y` union syntax.
 - All modules use `logging` (not print). Logger name = `__name__`.
-- Dataclasses for data models (ArxivPaper, GitHubItem, PwcPaper, AggregatedItem). Each has a `unique_id` property for dedup.
+- Dataclasses for data models (ArxivPaper, GitHubItem, AggregatedItem). Each has a `unique_id` property for dedup.
 - Config loaded via PyYAML. Paths relative to project root.
 - GitHub API via PyGithub library. REST calls via `requests`.
 
@@ -114,8 +114,8 @@ Edit `config/settings.yaml` → `filter.min_score`. Lower = more items, higher =
 ## Known Issues / Limitations
 
 - GitHub Trending scraping depends on page structure. If GitHub changes their HTML, `github_collector.py` may break.
-- arXiv API can be slow and occasionally rate-limits. The collector has retry logic (3 retries) and uses `max(published, updated)` to catch revised papers. `lookback_days=3` covers weekends when arXiv has no new papers.
-- Papers with Code API fetches the latest papers globally, not filtered by area before keyword matching. Could be optimized.
+- arXiv API can be slow and occasionally rate-limits. The collector has retry logic (3 retries) and uses `max(published, updated)` to catch revised papers. The query is constrained to an explicit `submittedDate:[start TO end]` range (start = `now - lookback_days`), so `lookback_days` is now actually honored instead of being capped to "the newest 200" by arXiv's unreliable `submittedDate` sort. arXiv does not announce papers on weekends, so the daily workflow only runs Mon–Fri (`cron: '0 8 * * 1-5'`); the 3-day lookback bridges the Fri→Mon gap. Trade-off: the submittedDate filter keys off the v1 submission, so a paper revised (but not first-submitted) inside the window won't be returned.
+- Papers with Code was removed. The paperswithcode.com API was shut down by Meta in 2025 and returned non-JSON responses (logged as `Expecting value: line 1 column 1`), producing 0 items every run. `pwc_collector.py` deleted; to add a replacement source follow "Adding a new data source" below.
 - Summarization cost: each daily run makes 1-2 Claude API calls to generate bilingual summaries (~12K tokens total). Translation is no longer used for daily emails; only weekly summaries still use full translation.
 - `seen.json` can grow large if many items are collected daily. Auto-pruning keeps only the last 30 days.
 

@@ -42,8 +42,7 @@ def format_weekly_summary(
     # Group by source
     arxiv_items = [i for i in items if i.source == "arxiv"]
     github_items = [i for i in items if i.source == "github"]
-    pwc_items = [i for i in items if i.source == "pwc"]
-    other_items = [i for i in items if i.source not in ("arxiv", "github", "pwc")]
+    other_items = [i for i in items if i.source not in ("arxiv", "github")]
 
     # Top highlights section (overall top 5)
     body_parts.append("## Top Highlights\n")
@@ -78,18 +77,6 @@ def format_weekly_summary(
     if github_items:
         body_parts.append(f"## GitHub Updates ({len(github_items)})\n")
         for i, item in enumerate(github_items, 1):
-            cats = ", ".join(item.matched_categories)
-            body_parts.append(f"{i}. [{item.title}]({item.url}) | Score: {item.weighted_score:.1f}")
-            if cats:
-                body_parts.append(f"   Topics: {cats}")
-            if item.description:
-                body_parts.append(f"   > {item.description[:200]}")
-            body_parts.append("")
-        body_parts.append("---\n")
-
-    if pwc_items:
-        body_parts.append(f"## Papers with Code ({len(pwc_items)})\n")
-        for i, item in enumerate(pwc_items, 1):
             cats = ", ".join(item.matched_categories)
             body_parts.append(f"{i}. [{item.title}]({item.url}) | Score: {item.weighted_score:.1f}")
             if cats:

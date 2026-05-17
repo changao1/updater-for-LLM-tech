@@ -18,7 +18,7 @@ class DedupStore:
     def __init__(self, path: str | Path = DEFAULT_PATH, retention_days: int = 30):
         self.path = Path(path)
         self.retention_days = retention_days
-        self._data: dict[str, list[dict]] = {"arxiv": [], "github": [], "pwc": []}
+        self._data: dict[str, list[dict]] = {"arxiv": [], "github": []}
         self._load()
 
     def _load(self):
@@ -30,7 +30,7 @@ class DedupStore:
                 logger.info(f"Loaded dedup store from {self.path}")
             except (json.JSONDecodeError, KeyError) as e:
                 logger.warning(f"Error loading dedup store, starting fresh: {e}")
-                self._data = {"arxiv": [], "github": [], "pwc": []}
+                self._data = {"arxiv": [], "github": []}
         else:
             self.path.parent.mkdir(parents=True, exist_ok=True)
 

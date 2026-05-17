@@ -2,8 +2,10 @@ name: Daily LLM Update
 
 on:
   schedule:
-    # Run daily at 08:00 UTC (16:00 Beijing Time)
-    - cron: '0 8 * * *'
+    # Run weekdays at 08:00 UTC (16:00 Beijing Time).
+    # arXiv does not announce new papers on weekends, so Sat/Sun runs
+    # produced empty digests — skip them entirely.
+    - cron: '0 8 * * 1-5'
   workflow_dispatch: # Allow manual trigger
 
 permissions:

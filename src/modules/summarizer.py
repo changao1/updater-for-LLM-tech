@@ -55,7 +55,7 @@ def _build_user_prompt(items_data: list[dict]) -> str:
 
 def _extract_text(item: Any) -> str:
     """Extract the abstract / description text from an item regardless of type."""
-    # ArxivPaper / PwcPaper have 'abstract'; GitHubItem has 'description' + 'release_body'
+    # ArxivPaper has 'abstract'; GitHubItem has 'description' + 'release_body'
     text = getattr(item, "abstract", "") or ""
     if not text:
         text = getattr(item, "description", "") or ""

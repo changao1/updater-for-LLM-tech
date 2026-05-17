@@ -16,7 +16,6 @@ _LABELS = {
         "new_releases": "New Releases",
         "trending_repos": "Trending Repos",
         "arxiv_papers": "arXiv Papers",
-        "papers_with_code": "Papers with Code",
         "relevance": "Relevance",
         "score": "score",
         "topics": "Topics",
@@ -31,7 +30,6 @@ _LABELS = {
         "daily_title": "LLM Research & Tech Daily Update",
         "summary_github": "GitHub updates",
         "summary_arxiv": "arXiv papers",
-        "summary_pwc": "Papers with Code",
         "hot_repos": "🔥 Hot Repos (by star growth)",
         "growth_7d": "7d growth",
         "no_items": "No new items matching the configured keywords were found today.",
@@ -45,7 +43,6 @@ _LABELS = {
         "new_releases": "新发布",
         "trending_repos": "热门仓库",
         "arxiv_papers": "arXiv 论文",
-        "papers_with_code": "Papers with Code",
         "relevance": "相关性",
         "score": "得分",
         "topics": "主题",
@@ -60,7 +57,6 @@ _LABELS = {
         "daily_title": "LLM 研究与技术日报",
         "summary_github": "GitHub 更新",
         "summary_arxiv": "arXiv 论文",
-        "summary_pwc": "Papers with Code",
         "hot_repos": "🔥 热门仓库 (按 star 增速)",
         "growth_7d": "7日增长",
         "no_items": "今日没有匹配到符合关键词的新内容。",
@@ -100,7 +96,7 @@ def _get_summary(item, lang: str, fallback_field: str) -> str:
     Otherwise fall back to the truncated original text.
 
     Args:
-        item: A data item (ArxivPaper, GitHubItem, or PwcPaper).
+        item: A data item (ArxivPaper or GitHubItem).
         lang: Language code - "en" or "cn".
         fallback_field: Attribute name to use as fallback (e.g. "abstract", "description").
 
@@ -244,69 +240,19 @@ def format_github_section(items: list, lang: str = "en") -> str:
     return "\n".join(lines)
 
 
-def format_pwc_section(papers: list, lang: str = "en") -> str:
-    """Format Papers with Code items into Markdown.
-
-    Args:
-        papers: List of PwcPaper objects (already filtered and scored).
-        lang: Language for summaries and labels - "en" or "cn".
-
-    Returns:
-        Markdown string for the PWC section.
-    """
-    if not papers:
-        return ""
-
-    lines = [f"## {_l('papers_with_code', lang)} ({len(papers)})\n"]
-
-    for i, paper in enumerate(papers, 1):
-        badge = _score_badge(paper.relevance_score, lang)
-        cats = ", ".join(paper.matched_categories) if paper.matched_categories else ""
-
-        lines.append(f"### {i}. [{paper.title}]({paper.url_abs})")
-        lines.append(
-            f"**{_l('relevance', lang)}: {badge}** "
-            f"({_l('score', lang)}: {paper.relevance_score})"
-            + (f" | **{_l('topics', lang)}**: {cats}" if cats else "")
-        )
-
-        if paper.authors:
-            authors = ", ".join(paper.authors[:3])
-            if len(paper.authors) > 3:
-                authors += " et al."
-            lines.append(f"**{_l('authors', lang)}**: {authors}")
-
-        summary_text = _get_summary(paper, lang, "abstract")
-        if summary_text:
-            lines.append(f"\n> {summary_text}\n")
-
-        link_parts = []
-        if paper.url_pdf:
-            link_parts.append(f"[PDF]({paper.url_pdf})")
-        if paper.repository_url:
-            star_str = f" ({paper.stars:,} stars)" if paper.stars else ""
-            link_parts.append(f"[Code]({paper.repository_url}){star_str}")
-        if link_parts:
-            lines.append(" | ".join(link_parts) + "\n")
-
-    return "\n".join(lines)
-
-
 def format_daily_issue(
     arxiv_papers: list,
     github_items: list,
-    pwc_papers: list,
     date_str: str | None = None,
     lang: str = "en",
 ) -> tuple[str, str]:
     """Format all sections into a complete daily update Issue.
 
-    Sections are ordered: GitHub -> arXiv -> Papers with Code.
+    Sections are ordered: GitHub -> arXiv.
 
     Args:
         arxiv_papers: Filtered arXiv papers.
         github_items: Filtered GitHub items.
-        pwc_papers: Filtered PWC papers.
         date_str: Date string for the title (default: today).
         lang: Language for summaries and labels - "en" or "cn".
 
@@ -316,7 +262,7 @@ def format_daily_issue(
     if date_str is None:
         date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
-    total = len(arxiv_papers) + len(github_items) + len(pwc_papers)
+    total = len(arxiv_papers) + len(github_items)
 
     title = f"LLM Daily Update - {date_str} ({total} items)"
 
@@ -325,12 +271,11 @@ def format_daily_issue(
     # Summary line (GitHub first to match section order)
     body_parts.append(
         f"**{len(github_items)}** {_l('summary_github', lang)} | "
-        f"**{len(arxiv_papers)}** {_l('summary_arxiv', lang)} | "
-        f"**{len(pwc_papers)}** {_l('summary_pwc', lang)}\n"
+        f"**{len(arxiv_papers)}** {_l('summary_arxiv', lang)}\n"
     )
     body_parts.append("---\n")
 
-    # Sections: GitHub first, then arXiv, then PwC
+    # Sections: GitHub first, then arXiv
     github_md = format_github_section(github_items, lang=lang)
     if github_md:
         body_parts.append(github_md)
@@ -339,11 +284,6 @@ def format_daily_issue(
     arxiv_md = format_arxiv_section(arxiv_papers, lang=lang)
     if arxiv_md:
         body_parts.append(arxiv_md)
-        body_parts.append("---\n")
-
-    pwc_md = format_pwc_section(pwc_papers, lang=lang)
-    if pwc_md:
-        body_parts.append(pwc_md)
         body_parts.append("---\n")
 
     if total == 0:

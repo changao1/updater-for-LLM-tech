@@ -7,9 +7,14 @@ arxiv:
     - cs.AI   # Artificial Intelligence
     - cs.LG   # Machine Learning
     - cs.SE   # Software Engineering (for coding-related)
-  # Maximum number of papers to fetch per run
-  max_results: 200
-  # Only fetch papers from the last N days (3 covers weekends when arXiv has no new papers)
+  # Hard cap on papers fetched per run. The query is constrained to a
+  # submittedDate range (see arxiv_collector.py), so this only matters on
+  # unusually high-volume windows; results are kept newest-first.
+  max_results: 600
+  # Fetch papers submitted in the last N days. The collector now uses an
+  # explicit submittedDate:[...] range, so this lookback is actually honored
+  # (it isn't capped to "the newest 200" anymore). 3 days bridges the Fri→Mon
+  # gap so Monday's run still backfills late-Friday submissions.
   lookback_days: 3
 
 github:
@@ -27,10 +32,5 @@ github:
     # Spoken language filter (empty = all)
     spoken_language: ""
 
-papers_with_code:
-  # Number of latest papers to fetch
-  max_results: 50
-  # Areas to monitor
-  areas:
-    - natural-language-processing
-    - machine-learning
+# NOTE: Papers with Code was removed — the paperswithcode.com API was shut
+# down by Meta in 2025 and no longer returns valid responses.

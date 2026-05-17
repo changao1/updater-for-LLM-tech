@@ -17,7 +17,7 @@ class AggregatedItem:
 
     title: str
     url: str
-    source: str  # "arxiv", "github", "pwc"
+    source: str  # "arxiv", "github", "other"
     relevance_score: float = 0.0
     matched_categories: list[str] = field(default_factory=list)
     description: str = ""
@@ -49,7 +49,9 @@ def _parse_issue_body(body: str) -> list[AggregatedItem]:
     section_patterns = {
         "arxiv": re.compile(r"^##\s+arXiv\s+Papers", re.IGNORECASE),
         "github": re.compile(r"^##\s+GitHub\s+Updates", re.IGNORECASE),
-        "pwc": re.compile(r"^##\s+Papers\s+with\s+Code", re.IGNORECASE),
+        # Papers with Code was removed; still recognise the header in older
+        # issues so its items are bucketed as "other" rather than mis-attributed.
+        "other": re.compile(r"^##\s+Papers\s+with\s+Code", re.IGNORECASE),
     }
 
     # Match item headers: ### N. [Title](URL) or **N. [Title](URL)**

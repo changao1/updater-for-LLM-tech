@@ -51,14 +51,28 @@ def collect(config: dict) -> list[ArxivPaper]:
         List of ArxivPaper objects.
     """
     categories = config.get("categories", ["cs.CL", "cs.AI", "cs.LG"])
-    max_results = config.get("max_results", 200)
+    max_results = config.get("max_results", 600)
     lookback_days = config.get("lookback_days", 3)
 
-    cutoff_date = datetime.now(timezone.utc) - timedelta(days=lookback_days)
+    now = datetime.now(timezone.utc)
+    cutoff_date = now - timedelta(days=lookback_days)
 
-    # Build query: search across all configured categories
+    # Build query: categories AND an explicit submittedDate range.
+    #
+    # Why the date range matters: arXiv's `sortBy=submittedDate` is unreliable —
+    # requesting the "newest N" returns a clustered/stale snapshot, so with only
+    # a max_results cap the lookback window never actually reaches `lookback_days`
+    # back on busy weekdays. Constraining `submittedDate:[start TO end]` in the
+    # query makes the result set deterministic: we get *every* paper in the
+    # window regardless of API sort quirks, capped by max_results.
+    #
+    # Note: arXiv's submittedDate filter keys off the original (v1) submission,
+    # so a paper submitted before the window but revised inside it won't be
+    # returned. That's an accepted trade-off for predictable, complete coverage
+    # of newly-submitted papers. Format is YYYYMMDDHHMM (UTC).
     cat_query = " OR ".join(f"cat:{cat}" for cat in categories)
-    query = f"({cat_query})"
+    date_range = f"[{cutoff_date.strftime('%Y%m%d%H%M')} TO {now.strftime('%Y%m%d%H%M')}]"
+    query = f"({cat_query}) AND submittedDate:{date_range}"
 
     logger.info(f"Querying arXiv: {query} (max {max_results} results, lookback {lookback_days} days)")
 
