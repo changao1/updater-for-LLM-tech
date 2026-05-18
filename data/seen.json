@@ -14171,30 +14171,6 @@
   ],
   "github": [
     {
-      "id": "github:trending:nv-tlabs/lyra",
-      "seen_at": "2026-04-18T08:40:42.351911+00:00"
-    },
-    {
-      "id": "github:trending:NVlabs/GR00T-WholeBodyControl",
-      "seen_at": "2026-04-18T08:40:42.351986+00:00"
-    },
-    {
-      "id": "github:trending:anthropics/skills",
-      "seen_at": "2026-04-18T08:40:42.352078+00:00"
-    },
-    {
-      "id": "github:trending:microsoft/apm",
-      "seen_at": "2026-04-18T08:40:42.352143+00:00"
-    },
-    {
-      "id": "github:trending:Shubhamsaboo/awesome-llm-apps",
-      "seen_at": "2026-04-18T08:40:42.352234+00:00"
-    },
-    {
-      "id": "github:trending:google/flax",
-      "seen_at": "2026-04-18T08:40:42.352564+00:00"
-    },
-    {
       "id": "github:trending:AI4Finance-Foundation/FinRL-Trading",
       "seen_at": "2026-04-19T08:44:41.140243+00:00"
     },
@@ -15265,6 +15241,46 @@
     {
       "id": "github:trending:cyberark/FuzzyAI",
       "seen_at": "2026-05-17T09:31:06.916102+00:00"
+    },
+    {
+      "id": "github:trending:NVlabs/Sana",
+      "seen_at": "2026-05-18T11:35:47.593666+00:00"
+    },
+    {
+      "id": "github:trending:mattzh72/articraft",
+      "seen_at": "2026-05-18T11:35:47.593758+00:00"
+    },
+    {
+      "id": "github:trending:zinja-coder/jadx-mcp-server",
+      "seen_at": "2026-05-18T11:35:47.593867+00:00"
+    },
+    {
+      "id": "github:trending:Light-Heart-Labs/DreamServer",
+      "seen_at": "2026-05-18T11:35:47.593924+00:00"
+    },
+    {
+      "id": "github:trending:yichuan-w/LEANN",
+      "seen_at": "2026-05-18T11:35:47.593962+00:00"
+    },
+    {
+      "id": "github:trending:GreyDGL/PentestGPT",
+      "seen_at": "2026-05-18T11:35:47.594016+00:00"
+    },
+    {
+      "id": "github:trending:topoteretes/cognee",
+      "seen_at": "2026-05-18T11:35:47.594054+00:00"
+    },
+    {
+      "id": "github:trending:fivethirtyeight/data",
+      "seen_at": "2026-05-18T11:35:47.594183+00:00"
+    },
+    {
+      "id": "github:trending:Marktechpost/AI-Agents-Projects-Tutorials",
+      "seen_at": "2026-05-18T11:35:47.594268+00:00"
+    },
+    {
+      "id": "github:trending:esokolov/ml-course-hse",
+      "seen_at": "2026-05-18T11:35:47.594331+00:00"
     }
   ],
   "pwc": []
