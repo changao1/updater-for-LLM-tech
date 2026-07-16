@@ -3141,5 +3141,27 @@
       "cn": true
     },
     "errors": []
+  },
+  {
+    "date": "2026-07-16T09:52:32.597638+00:00",
+    "type": "daily",
+    "collected": {
+      "arxiv": 600,
+      "github": 32
+    },
+    "after_dedup": {
+      "arxiv": 265,
+      "github": 12
+    },
+    "after_filter": {
+      "arxiv": 15,
+      "github": 4
+    },
+    "issue_url": "https://github.com/changao1/updater-for-LLM-tech/issues/133",
+    "email": {
+      "en": true,
+      "cn": true
+    },
+    "errors": []
   }
 ]
